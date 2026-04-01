@@ -1,0 +1,94 @@
+<app-navbar></app-navbar>
+<div class="background">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card border-0 shadow-sm contact-card">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex flex-column flex-md-row gap-3 align-items-md-start justify-content-between mb-4">
+                        <div>
+                            <h2 class="h4 fw-semibold mb-1">Contact</h2>
+                            <div class="text-muted small">Renseigne les informations ci-dessous.</div>
+                        </div>
+
+                    </div>
+
+                    <form class="article-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="recipient" class="form-label">Email</label>
+                                <input
+                                    id="recipient"
+                                    type="text"
+                                    formControlName="recipient"
+                                    class="form-control contact-input"
+                                    placeholder="Ton email..."
+                                    [class.is-invalid]="emailRecipient.invalid && (emailRecipient.dirty || emailRecipient.touched)"
+                                />
+                                @if (emailRecipient.invalid && (emailRecipient.dirty || emailRecipient.touched)) {
+                                    <div class="invalid-feedback">
+                                        @if (emailRecipient.hasError('required')) {
+                                            Le destinataire est requis.
+                                        }
+                                        @if (emailRecipient.hasError('minlength')) {
+                                            Le destinataire doit comporter au moins 5 caractères.
+                                        }
+                                        @if (emailRecipient.hasError('maxlength')) {
+                                            Le destinataire ne doit pas dépasser 150 caractères.
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-12">
+                                <label for="subject" class="form-label">Objet</label>
+                                <input
+                                    id="subject"
+                                    formControlName="subject"
+                                    class="form-control contact-input"
+                                    placeholder="Écris ton objet…"
+                                    [class.is-invalid]="emailSubject.invalid && (emailSubject.dirty || emailSubject.touched)"
+                                />
+                                @if (emailSubject.invalid && (emailSubject.dirty || emailSubject.touched)) {
+                                    <div class="invalid-feedback">
+                                        @if (emailSubject.errors?.['required']) {
+                                            L'objet est requis.
+                                        }
+                                        @if (emailSubject.errors?.['minlength']) {
+                                            L'objet doit comporter au moins 5 caractères.
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-12">
+                                <label for="message" class="form-label">Votre Message</label>
+                                <textarea
+                                    id="message"
+                                    formControlName="message"
+                                    class="form-control contact-input"
+                                    rows="8"
+                                    placeholder="Écris ton message…"
+                                    [class.is-invalid]="emailMessage.invalid && (emailMessage.dirty || emailMessage.touched)"
+                                ></textarea>
+                                @if (emailMessage.invalid && (emailMessage.dirty || emailMessage.touched)) {
+                                    <div class="invalid-feedback">
+                                        @if (emailMessage.errors?.['required']) {
+                                            Le message est requis.
+                                        }
+                                    </div>
+                                }
+                            </div>                                
+                            
+                            <div class="col-12 d-flex flex-column flex-sm-row gap-2 justify-content-end pt-2">
+                                <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Envoyer</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>
+</div>

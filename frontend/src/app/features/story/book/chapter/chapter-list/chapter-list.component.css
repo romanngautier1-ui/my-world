@@ -1,0 +1,43 @@
+
+.chapter-card--read {
+	background-color: var(--bs-primary-bg-subtle);
+}
+
+@supports (background-color: color-mix(in srgb, black, white)) {
+	.chapter-card--read {
+		background-color: color-mix(in srgb, var(--bs-purple) 14%, transparent);
+		box-shadow: 0 0 0 1px color-mix(in srgb, var(--bs-purple) 38%, transparent) inset;
+	}
+}
+
+a :hover{
+    opacity: 0.9;
+    background-color: rgb(223, 203, 243);
+}
+
+.chapter-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.chapter-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chapter-content {
+    flex: 1;
+}
+
+.chapter-search {
+    width: 100%;
+    max-width: 920px;
+    margin-inline: auto;
+}
+
+.chapter-search__input {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}

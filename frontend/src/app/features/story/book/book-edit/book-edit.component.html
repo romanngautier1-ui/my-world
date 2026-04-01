@@ -1,0 +1,108 @@
+<app-navbar></app-navbar>
+<div class="background book-edit-page" [style.background-image]="'url(' + (bookUrlImage.value || 'https://images.unsplash.com/photo-1668366896136-c49695bd87f9?q=80&w=1906&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') + ')'">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="card border-0 shadow-sm book-card">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-flex flex-column flex-md-row gap-3 align-items-md-start justify-content-between mb-4">
+                            <div>
+                                <h2 class="h4 fw-semibold mb-1">Éditer un livre</h2>
+                                <div class="text-muted small">Modifie les informations du livre.</div>
+                            </div>
+                        </div>
+
+                        <form class="book-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="title" class="form-label">Titre</label>
+                                    <input
+                                        id="title"
+                                        type="text"
+                                        formControlName="title"
+                                        class="form-control book-input"
+                                        [class.is-invalid]="bookTitle.invalid && (bookTitle.dirty || bookTitle.touched)"
+                                    />
+                                    @if (bookTitle.invalid && (bookTitle.dirty || bookTitle.touched)) {
+                                        <div class="invalid-feedback">
+                                            @if (bookTitle.errors?.['required']) { Le titre est requis. }
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="col-12 col-md-4">
+                                    <label for="number" class="form-label">Numéro</label>
+                                    <input
+                                        id="number"
+                                        type="number"
+                                        formControlName="number"
+                                        class="form-control book-input"
+                                        [class.is-invalid]="bookNumber.invalid && (bookNumber.dirty || bookNumber.touched)"
+                                    />
+                                    @if (bookNumber.invalid && (bookNumber.dirty || bookNumber.touched)) {
+                                        <div class="invalid-feedback">
+                                            @if (bookNumber.errors?.['required']) { Le numéro est requis. }
+                                            @if (bookNumber.errors?.['min']) { Le numéro doit être supérieur ou égal à 0. }
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea
+                                        id="description"
+                                        formControlName="description"
+                                        class="form-control book-input"
+                                        rows="6"
+                                        placeholder="..."
+                                        [class.is-invalid]="bookDescription.invalid && (bookDescription.dirty || bookDescription.touched)"
+                                    ></textarea>
+                                    @if (bookDescription.invalid && (bookDescription.dirty || bookDescription.touched)) {
+                                        <div class="invalid-feedback">
+                                            @if (bookDescription.errors?.['required']) { La description est requise. }
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="urlImage" class="form-label">URL de l'image</label>
+                                    <input
+                                        id="urlImage"
+                                        type="text"
+                                        formControlName="urlImage"
+                                        class="form-control book-input"
+                                        placeholder="https://..."
+                                        [class.is-invalid]="bookUrlImage.invalid && (bookUrlImage.dirty || bookUrlImage.touched)"
+                                    />
+                                    @if (bookUrlImage.invalid && (bookUrlImage.dirty || bookUrlImage.touched)) {
+                                        <div class="invalid-feedback">
+                                            @if (bookUrlImage.errors?.['pattern']) { L'URL de l'image doit être une URL valide. }
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="uploadImage" class="form-label">Image à télécharger</label>
+                                    <input
+                                        id="uploadImage"
+                                        type="file"
+                                        formControlName="uploadImage"
+                                        class="form-control book-input"
+                                        (change)="onFileSelected($event)"
+                                    />
+                                </div>
+
+                                <div class="col-12 d-flex flex-column flex-sm-row gap-2 justify-content-end pt-2">
+                                    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Éditer</button>
+                                    <a class="btn btn-outline-secondary" routerLink="/books">Retour</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-footer></app-footer>
+</div>

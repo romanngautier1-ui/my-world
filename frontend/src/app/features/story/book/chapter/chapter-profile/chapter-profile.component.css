@@ -1,0 +1,46 @@
+:host {
+    --chapter-navbar-height: 72px;
+    --chapter-progress-height: 8px;
+}
+
+.chapter-navbar {
+    min-height: var(--chapter-navbar-height);
+}
+
+.chapter-navbar--compact {
+    min-height: auto;
+}
+
+.chapter-navbar--compact .container-fluid {
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+}
+
+.chapter-navbar--compact .navbar-brand,
+.chapter-navbar--compact .navbar-text {
+    line-height: 1.1;
+}
+
+.chapter-content {
+    padding-top: calc(var(--chapter-navbar-height) + var(--chapter-progress-height) + 1.5rem);
+}
+
+.chapter-progress {
+    position: fixed;
+    top: var(--chapter-navbar-height);
+    left: 0;
+    width: 100%;
+    z-index: 1029;
+    border-radius: 0;
+    height: var(--chapter-progress-height);
+}
+
+.chapter-progress .progress-bar {
+    line-height: var(--chapter-progress-height);
+    font-size: 0;
+}
+
+.button-none {
+    border: none;
+    background: none;
+}

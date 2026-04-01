@@ -1,0 +1,66 @@
+
+.about-hero {
+	background:
+		radial-gradient(900px circle at 10% 20%, color-mix(in srgb, var(--bs-primary) 18%, transparent), transparent 55%),
+		radial-gradient(800px circle at 90% 10%, color-mix(in srgb, var(--bs-info) 14%, transparent), transparent 60%);
+	border-bottom: 1px solid color-mix(in srgb, var(--bs-body-color) 12%, transparent);
+}
+
+.about-kpi {
+	height: 100%;
+	padding: 0.75rem 1rem;
+	border-radius: 0.75rem;
+	background-color: color-mix(in srgb, var(--bs-body-bg) 92%, var(--bs-primary) 8%);
+	border: 1px solid color-mix(in srgb, var(--bs-body-color) 10%, transparent);
+}
+
+.about-mark {
+	width: 44px;
+	height: 44px;
+	border-radius: 0.9rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 800;
+	letter-spacing: 0.02em;
+	background-color: color-mix(in srgb, var(--bs-primary) 14%, var(--bs-body-bg));
+	border: 1px solid color-mix(in srgb, var(--bs-primary) 24%, transparent);
+	color: var(--bs-primary);
+}
+
+.about-pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.35rem 0.6rem;
+	border-radius: 999px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	background-color: color-mix(in srgb, var(--bs-secondary-bg) 85%, var(--bs-primary) 15%);
+	border: 1px solid color-mix(in srgb, var(--bs-body-color) 10%, transparent);
+}
+
+.about-step {
+	width: 2.25rem;
+	height: 2.25rem;
+	border-radius: 0.8rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	background-color: color-mix(in srgb, var(--bs-secondary-bg) 80%, var(--bs-primary) 20%);
+	border: 1px solid color-mix(in srgb, var(--bs-body-color) 10%, transparent);
+}
+
+.about-dot {
+	width: 0.55rem;
+	height: 0.55rem;
+	border-radius: 999px;
+	margin-top: 0.35rem;
+	background-color: color-mix(in srgb, var(--bs-body-color) 35%, transparent);
+}
+
+.about-cta {
+	background:
+		radial-gradient(700px circle at 15% 50%, color-mix(in srgb, var(--bs-primary) 12%, transparent), transparent 55%),
+		radial-gradient(700px circle at 85% 10%, color-mix(in srgb, var(--bs-warning) 10%, transparent), transparent 55%);
+}

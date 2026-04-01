@@ -1,0 +1,80 @@
+<app-navbar></app-navbar>
+<div
+    class="article-page"
+    [style.--article-bg-image]="'url(' + ((article.value() ? (article.value().urlImage || 'https://images.unsplash.com/photo-1668366896136-c49695bd87f9?q=80&w=1906&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') : 'https://images.unsplash.com/photo-1668366896136-c49695bd87f9?q=80&w=1906&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')) + ')'"
+>
+@if (article.value(); as a) {
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-flex flex-column flex-md-row gap-3 align-items-md-start justify-content-between">
+                            <div class="min-w-0">
+                                <h1 class="h3 fw-semibold mb-2 text-break">{{ a.title }}</h1>
+                                <div class="text-muted small">
+                                    <span>{{ a.createdAt | date: 'mediumDate' }}</span>
+                                    <span class="mx-2">•</span>
+                                    <span>Par {{ a.username }}</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-2 justify-content-md-end">
+                                <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/articles']">Retour</a>
+                                @if (isAdmin) {
+                                    <a class="btn btn-outline-primary btn-sm" [routerLink]="['/articles', a.id, 'edit']">Modifier</a>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteArticle()">Supprimer</button>
+                                }
+                            </div>
+                        </div>
+
+                        @if (a.urlImage) {
+                            <figure class="article-hero mt-4 mb-0">
+                                <img
+                                    class="img-fluid w-100 rounded-3 border"
+                                    [src]="a.urlImage"
+                                    alt="Illustration de l’article"
+                                    loading="lazy"
+                                />
+                            </figure>
+                        }
+
+                        <hr class="my-4" />
+
+                        <div class="text-justify article-content">
+                            {{ a.content }}
+                        </div>
+
+                        <div class="d-flex mt-4">
+                            @if(isPrevArticleAvailable()) {
+                                <button class="btn btn-bd-primary text-light me-auto" (click)="previousArticle()" [disabled]="!isPrevArticleAvailable()">Article précédent</button>
+                            }
+                            @if(isNextArticleAvailable()) {
+                                <button class="btn btn-bd-primary text-light ms-auto" (click)="nextArticle()" [disabled]="!isNextArticleAvailable()">Article suivant</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (article.isLoading()) {
+    <div class="container py-5">
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Chargement…</span>
+            </div>
+        </div>
+    </div>
+}
+
+@if (article.error()) {
+    <div class="container py-4">
+        <div class="alert alert-danger mb-0" role="alert">Erreur de chargement : {{ article.error() }}</div>
+    </div>
+}
+
+<app-footer></app-footer>
+</div>

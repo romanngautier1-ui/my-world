@@ -1,0 +1,92 @@
+html,
+body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+}
+
+.mw-gradient-bg {
+	background:
+		radial-gradient(900px circle at 10% 20%, color-mix(in srgb, var(--bs-primary) 18%, transparent), transparent 55%),
+		radial-gradient(800px circle at 90% 10%, color-mix(in srgb, var(--bs-info) 14%, transparent), transparent 60%);
+}
+
+.app-shell {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.app-main {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+/* ── Shared form styles ── */
+
+.background {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.contact-card.card,
+.book-card.card,
+.chapter-card.card,
+.article-card.card {
+	background-color: rgba(255, 255, 255, 0.86);
+}
+
+.contact-input.form-control,
+.book-input.form-control,
+.chapter-input.form-control,
+.article-input.form-control {
+	background-color: rgba(255, 255, 255, 0.72);
+}
+
+.contact-input.form-control:focus,
+.book-input.form-control:focus,
+.chapter-input.form-control:focus,
+.article-input.form-control:focus {
+	background-color: rgba(255, 255, 255, 0.86);
+}
+
+/* ── Shared full-page form layout ── */
+
+.reset-password-page,
+.reset-password-link-page,
+.verify-email-page,
+.book-edit-page {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.home-body,
+.reset-password-body,
+.reset-password-link-body,
+.verify-email-body {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.home-content,
+.reset-password-content,
+.reset-password-link-content,
+.verify-email-content {
+	flex: 1;
+}
+
+/* ── Shared text utilities ── */
+
+.text-justify {
+	text-align: justify;
+	hyphens: auto;
+}
+
+.article-form textarea {
+	min-height: 200px;
+}

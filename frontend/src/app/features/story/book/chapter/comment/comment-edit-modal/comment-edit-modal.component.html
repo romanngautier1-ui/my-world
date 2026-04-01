@@ -1,0 +1,33 @@
+<form [formGroup]="form">
+    <div class="form-group">
+        <label for="content">Contenu</label>
+        <textarea id="content" formControlName="content" class="form-control"></textarea>
+        @if(commentContent.touched && commentContent.invalid) {
+            <div class="error">
+            @if(commentContent.errors?.['required']) {
+                <p>Le contenu est requis.</p>
+            }
+            @if(commentContent.errors?.['minlength']) {
+                <p>Le contenu doit comporter au moins 3 caractères.</p>
+            }
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label for="rating">Note</label>
+        <input id="rating" type="number" formControlName="rating" class="form-control" min="1" max="10">
+        @if(commentRating.touched && commentRating.invalid) {
+            <div class="error">
+            @if(commentRating.errors?.['required']) {
+                <p>La note est requise.</p>
+            }
+            @if(commentRating.errors?.['min']) {
+                <p>La note doit être au moins 1.</p>
+            }
+            @if(commentRating.errors?.['max']) {
+                <p>La note ne peut pas dépasser 10.</p>
+            }
+            </div>
+        }
+    </div>
+</form>

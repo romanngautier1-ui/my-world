@@ -1,0 +1,39 @@
+
+<footer class="footer bg-dark text-light mt-4" data-bs-theme="dark">
+    <div class="container py-4">
+        <div class="row g-4 align-items-start">
+            <div class="col-12 col-md-5">
+                <div class="fw-semibold">My World</div>
+                <p class="text-secondary small mb-0">
+                    Lis, écris et organise tes histoires (livres, chapitres, articles).
+                </p>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="text-uppercase small fw-semibold mb-2">Liens</div>
+                <ul class="list-unstyled small mb-0">
+                    <li><a class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" routerLink="/home">Accueil</a></li>
+                    <li><a class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" routerLink="/books">Histoire</a></li>
+                    <li><a class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" routerLink="/articles">Actualités</a></li>
+                    <li><a class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" routerLink="/contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-md-4">
+                <div class="text-uppercase small fw-semibold mb-2">Compte</div>
+                <ul class="list-unstyled small mb-0">
+                    <li><a class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" routerLink="/login">Connexion</a></li>
+                    <li><a class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" routerLink="/register">Créer un compte</a></li>
+                    <li><a class="link-light link-underline-opacity-0 link-underline-opacity-75-hover" routerLink="/reset-password">Mot de passe oublié</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="border-secondary my-4" />
+
+        <div class="d-flex flex-column flex-md-row gap-2 align-items-md-center justify-content-between">
+            <div class="text-secondary small">© {{ currentYear }} My World. Tous droits réservés.</div>
+            <div class="text-secondary small">Version bêta</div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,59 @@
+@if (isOpen()) {
+	<div class="modal-backdrop show" (click)="onBackdropClick()"></div>
+	<div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" (click)="$event.stopPropagation()">
+				<div class="modal-header">
+					<h5 class="modal-title">Modifier pseudo et email</h5>
+					<button type="button" class="btn-close" aria-label="Close" (click)="close.emit()"></button>
+				</div>
+				<div class="modal-body">
+					@if (message()) {
+						<div class="alert alert-info" role="alert">{{ message() }}</div>
+					}
+
+					<form (submit)="onSubmit($event)">
+						<div class="mb-3">
+							<label for="username" class="form-label">Pseudo</label>
+							<input
+								#usernameField
+								id="username"
+								type="text"
+								name="username"
+								class="form-control"
+								autocomplete="username"
+								[value]="newUsername()"
+								(input)="newUsername.set(usernameField.value)"
+								required
+							/>
+						</div>
+
+						<div class="mb-3">
+							<label for="email" class="form-label">Email</label>
+							<input
+								#emailField
+								id="email"
+								type="email"
+								name="email"
+								class="form-control"
+								autocomplete="email"
+								[value]="newEmail()"
+								(input)="newEmail.set(emailField.value)"
+								required
+							/>
+						</div>
+
+						<div class="d-grid">
+							<button type="submit" class="btn btn-primary" [disabled]="!isFormValid">
+								Enregistrer
+							</button>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" (click)="onBackdropClick()">Fermer</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}

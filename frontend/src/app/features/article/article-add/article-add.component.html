@@ -1,0 +1,119 @@
+<app-navbar></app-navbar>
+<div class="background">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card border-0 shadow-sm contact-card">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex flex-column flex-md-row gap-3 align-items-md-start justify-content-between mb-4">
+                        <div>
+                            <h2 class="h4 fw-semibold mb-1">Ajouter un article</h2>
+                            <div class="text-muted small">Renseigne les informations ci-dessous.</div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/articles']">Retour</a>
+                        </div>
+                    </div>
+
+                    <form class="article-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="title" class="form-label">Titre</label>
+                                <input
+                                    id="title"
+                                    type="text"
+                                    formControlName="title"
+                                    class="form-control"
+                                    placeholder="Titre de l'article"
+                                    [class.is-invalid]="articleTitle.invalid && (articleTitle.dirty || articleTitle.touched)"
+                                />
+                                @if (articleTitle.invalid && (articleTitle.dirty || articleTitle.touched)) {
+                                    <div class="invalid-feedback">
+                                        @if (articleTitle.hasError('required')) {
+                                            Le titre est requis.
+                                        }
+                                        @if (articleTitle.hasError('minlength')) {
+                                            Le titre doit comporter au moins 3 caractères.
+                                        }
+                                        @if (articleTitle.hasError('maxlength')) {
+                                            Le titre ne doit pas dépasser 150 caractères.
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-12">
+                                <label for="content" class="form-label">Contenu</label>
+                                <textarea
+                                    id="content"
+                                    formControlName="content"
+                                    class="form-control contact-input"
+                                    rows="8"
+                                    placeholder="Écris ton article…"
+                                    [class.is-invalid]="articleContent.invalid && (articleContent.dirty || articleContent.touched)"
+                                ></textarea>
+                                @if (articleContent.invalid && (articleContent.dirty || articleContent.touched)) {
+                                    <div class="invalid-feedback">
+                                        @if (articleContent.errors?.['required']) {
+                                            Le contenu est requis.
+                                        }
+                                        @if (articleContent.errors?.['minlength']) {
+                                            Le contenu doit comporter au moins 3 caractères.
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-12">
+                                <label for="urlImage" class="form-label">URL de l'image</label>
+                                <input
+                                    id="urlImage"
+                                    type="text"
+                                    formControlName="urlImage"
+                                    class="form-control contact-input"
+                                    placeholder="https://..."
+                                    [class.is-invalid]="articleUrlImage.invalid && (articleUrlImage.dirty || articleUrlImage.touched)"
+                                />
+                                @if (articleUrlImage.invalid && (articleUrlImage.dirty || articleUrlImage.touched)) {
+                                    <div class="invalid-feedback">
+                                        @if (articleUrlImage.errors?.['pattern']) {
+                                            L'URL de l'image doit être une URL valide.
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-12">
+                                <label for="uploadImage" class="form-label">Image à télécharger</label>
+                                <input
+                                    id="uploadImage"
+                                    type="file"
+                                    formControlName="uploadImage"
+                                    class="form-control contact-input"
+                                    placeholder="..."
+                                    (change)="onFileSelected($event)"
+                                    [class.is-invalid]="articleUploadImage.invalid && (articleUploadImage.dirty || articleUploadImage.touched)"
+                                />
+                                @if (articleUploadImage.invalid && (articleUploadImage.dirty || articleUploadImage.touched)) {
+                                    <!-- <div class="invalid-feedback">
+                                        @if (articleUploadImage.errors?.['pattern']) {
+                                            L'URL de l'image doit être une URL valide.
+                                        }
+                                    </div> -->
+                                }
+                            </div>
+
+                            <div class="col-12 d-flex flex-column flex-sm-row gap-2 justify-content-end pt-2">
+                                <a class="btn btn-outline-secondary" [routerLink]="['/articles']">Annuler</a>
+                                <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Créer</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>
+</div>

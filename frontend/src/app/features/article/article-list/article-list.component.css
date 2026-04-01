@@ -1,0 +1,19 @@
+
+.article-card__image {
+	height: 160px;
+	object-fit: cover;
+}
+
+.article-card__overlay {
+	/* background: linear-gradient(
+		180deg,
+		rgba(200, 206, 212, 0.55) 0%,
+		rgba(162, 171, 184, 0.25) 45%,
+		rgba(201, 208, 251, 0.65) 100%
+	); */
+}
+
+a :hover {
+    opacity: 0.7;
+    background-color: rgb(246, 242, 250);
+}

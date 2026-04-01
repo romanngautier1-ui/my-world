@@ -1,0 +1,111 @@
+<div class="chapter-page mw-gradient-bg">
+<app-navbar></app-navbar>
+<div class="chapter-body">
+<section class="container py-4 chapter-content">
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3">
+    <div>
+      <h1 class="h3 mb-1">Chapitres</h1>
+      <p class="text-body-secondary mb-0">
+        Livre :
+        <span class="fw-semibold">{{ chapterList.value().title || '—' }}</span>
+      </p>
+    </div>
+
+    <a class="btn btn-outline-primary fw-semibold" [routerLink]="['/books']">
+      Retour
+    </a>
+    @if (isAdmin) {
+    <a class="btn btn-outline-warning fw-semibold" [routerLink]="['/books', bookId, 'chapters', 'add']">
+      Ajouter un chapitre
+    </a>
+    }
+  </div>
+
+  <div class="chapter-search mb-5">
+    <input
+      type="text"
+      id="search"
+      class="form-control form-control-lg rounded-pill shadow-sm chapter-search__input"
+      placeholder="Rechercher un chapitre…"
+      #searchField
+      [value]="searchTerm()"
+      (input)="searchTerm.set(searchField.value)"
+    />
+  </div>
+
+  @if (chapterList.isLoading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border" role="status" aria-label="Chargement">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  @if (chapterList.error()) {
+    <div class="alert alert-danger" role="alert">Erreur de chargement : {{ chapterList.error() }}</div>
+  }
+
+  @if (!chapterList.isLoading() && chapterList.value().chapters.length === 0) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center py-5">
+        <h2 class="h5 mb-2">Aucun chapitre pour le moment</h2>
+        <p class="text-body-secondary mb-4">Crée le premier chapitre pour commencer l’histoire.</p>
+        @if (isAdmin) {
+          <a class="btn btn-primary" [routerLink]="['/books', bookId, 'chapters', 'add']">Créer un chapitre</a>
+        }
+      </div>
+    </div>
+  }
+
+  @if (!chapterList.isLoading() && chapterList.value().chapters.length > 0) {
+    <div class="row g-4">
+      @for (chapter of filteredChapterList(); track chapter.number) {
+        @if(isChapterRead(chapter.id)) {
+          <div class="col-12">
+          <article
+            class="card h-100 border-0 shadow-sm"
+            [class.chapter-card--read]="isChapterRead(chapter.id)"
+          >
+            <a class="text-decoration-none link-body-emphasis" [routerLink]="['/books', bookId, 'chapters', chapter.id]">
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <h2 class="h5 mb-0 text-break">Chapitre {{ chapter.number }} — {{ chapter.title }}</h2>
+                  <span class="badge text-bg-secondary flex-shrink-0">#{{ chapter.id }}</span>
+                </div>
+
+                <p class="text-body-secondary small mb-0">Publié le {{ chapter.createdAt | date : 'dd/MM/yyyy' }}</p>
+
+                <div class="mt-auto d-flex justify-content-end"></div>
+              </div>
+            </a>
+          </article>
+        </div>
+        } @else {
+          <div class="col-12">
+          <article
+            class="card h-100 border-0 shadow-sm"
+          >
+            <a class="text-decoration-none link-body-emphasis" [routerLink]="['/books', bookId, 'chapters', chapter.id]">
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <h2 class="h5 mb-0 text-break">Chapitre {{ chapter.number }} — {{ chapter.title }}</h2>
+                  <span class="badge text-bg-secondary flex-shrink-0">#{{ chapter.id }}</span>
+                </div>
+
+                <p class="text-body-secondary small mb-0">Publié le {{ chapter.createdAt | date : 'dd/MM/yyyy' }}</p>
+
+                <div class="mt-auto d-flex justify-content-end"></div>
+              </div>
+            </a>
+          </article>
+        </div>
+        }
+        
+      }
+    </div>
+  }
+</section>
+
+<app-footer></app-footer>
+</div>
+</div>

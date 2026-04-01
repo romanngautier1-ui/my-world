@@ -1,0 +1,116 @@
+<app-navbar></app-navbar>
+<div class="background">
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+            <div class="card border-0 shadow-sm chapter-card">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex flex-column flex-md-row gap-3 align-items-md-start justify-content-between mb-4">
+                        <div>
+                            <h2 class="h4 fw-semibold mb-1">Ajouter un chapitre</h2>
+                            <div class="text-muted small">Renseigne les informations ci-dessous.</div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/books', bookId, 'chapters']">Retour</a>
+                        </div>
+                    </div>
+
+                    <form class="article-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="title" class="form-label">Titre</label>
+                                <input
+                                    id="title"
+                                    type="text"
+                                    formControlName="title"
+                                    class="form-control chapter-input"
+                                    placeholder="Titre du chapitre"
+                                    [class.is-invalid]="chapterTitle.invalid && (chapterTitle.dirty || chapterTitle.touched)"
+                                />
+                                @if (chapterTitle.invalid && (chapterTitle.dirty || chapterTitle.touched)) {
+                                    <div class="invalid-feedback">
+                                        @if (chapterTitle.hasError('required')) {
+                                            Le titre est requis.
+                                        }
+                                        @if (chapterTitle.hasError('minlength')) {
+                                            Le titre doit comporter au moins 3 caractères.
+                                        }
+                                        @if (chapterTitle.hasError('maxlength')) {
+                                            Le titre ne doit pas dépasser 150 caractères.
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-12">
+                                <label for="number" class="form-label">Numéro du chapitre</label>
+                                <input
+                                    id="number"
+                                    type="number"
+                                    min="1"
+                                    formControlName="number"
+                                    class="form-control chapter-input"
+                                    [class.is-invalid]="chapterNumber.invalid && (chapterNumber.dirty || chapterNumber.touched)"
+                                />
+                                @if (chapterNumber.invalid && (chapterNumber.dirty || chapterNumber.touched)) {
+                                    <div class="invalid-feedback">
+                                        @if (chapterNumber.errors?.['required']) {
+                                            Le numéro du chapitre est requis.
+                                        }
+                                        @if (chapterNumber.errors?.['min']) {
+                                            Le numéro du chapitre doit être au moins 1.
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-12">
+                                <label for="content" class="form-label">Contenu</label>
+                                <textarea
+                                    id="content"
+                                    formControlName="content"
+                                    class="form-control chapter-input"
+                                    rows="10"
+                                    placeholder="Écris ton chapitre…"
+                                    [class.is-invalid]="chapterContent.invalid && (chapterContent.dirty || chapterContent.touched)"
+                                ></textarea>
+                                @if (chapterContent.invalid && (chapterContent.dirty || chapterContent.touched)) {
+                                    
+                                }
+                            </div>
+
+                            <div class="col-12">
+                                <label for="uploadFile" class="form-label">Image à télécharger</label>
+                                <input
+                                    id="uploadFile"
+                                    type="file"
+                                    formControlName="uploadFile"
+                                    class="form-control chapter-input"
+                                    placeholder="..."
+                                    (change)="onFileSelected($event)"
+                                    [class.is-invalid]="chapterUploadFile.invalid && (chapterUploadFile.dirty || chapterUploadFile.touched)"
+                                />
+                                @if (chapterUploadFile.invalid && (chapterUploadFile.dirty || chapterUploadFile.touched)) {
+                                    <!-- <div class="invalid-feedback">
+                                        @if (chapterUploadFile.errors?.['pattern']) {
+                                            L'URL de l'image doit être une URL valide.
+                                        }
+                                    </div> -->
+                                }
+                            </div>
+
+
+                            <div class="col-12 d-flex flex-column flex-sm-row gap-2 justify-content-end pt-2">
+                                <a class="btn btn-outline-secondary" [routerLink]="['/books', bookId, 'chapters']">Annuler</a>
+                                <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Créer</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>
+</div>

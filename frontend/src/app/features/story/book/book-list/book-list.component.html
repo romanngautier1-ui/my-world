@@ -1,0 +1,95 @@
+
+<app-navbar></app-navbar>
+
+<div class="mw-gradient-bg">
+<div class="container py-4">
+  <div class="d-flex flex-column flex-md-row gap-3 align-items-md-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 fw-semibold mb-1">Livres</h1>
+    </div>
+
+    <div class="d-flex gap-2">
+      @if (isAdmin) {
+        <a class="btn btn-primary" [routerLink]="['/books/add']">Ajouter</a>
+      }
+    </div>
+  </div>
+
+  @if (bookList.isLoading()) {
+    <div class="d-flex justify-content-center py-4">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Chargement…</span>
+      </div>
+    </div>
+  }
+
+  @if (bookList.error()) {
+    <div class="alert alert-danger" role="alert">Erreur de chargement : {{ bookList.error() }}</div>
+  }
+
+  @if (!bookList.isLoading() && bookList.value().length === 0) {
+    <div class="alert alert-secondary" role="alert">Aucun livre pour le moment.</div>
+  }
+
+  <div class="book-list">
+    @for (book of bookList.value(); track book.id; let i = $index) {
+      <div class="book-row d-flex flex-column flex-md-row gap-3 align-items-stretch" [class.flex-md-row-reverse]="i % 2 === 1">
+        <div class="flex-fill">
+          <div
+            class="card book-card border-0 shadow-sm h-100"
+            [style.background-image]="book.urlImage ? 'url(' + book.urlImage + ')' : null"
+            [attr.aria-label]="'Livre ' + book.title"
+          >
+            <div class="book-card__overlay"></div>
+            <div class="card-body book-card__body p-4">
+              <div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-start justify-content-between">
+                <div class="min-w-0">
+                  <h2 class="h5 fw-semibold mb-1 text-break">{{ book.title }}</h2>
+                  <div class="text-muted small">
+                    <span>#{{ book.id }}</span>
+                    <span class="mx-2">•</span>
+                    <span>{{ book.createdAt | date: 'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                  <a class="btn btn-outline-primary btn-sm" [routerLink]="['/books', book.id, 'chapters']">Lire</a>
+                  @if (isAdmin) {
+                    <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/books', book.id, 'edit']">Éditer</a>
+                    <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteBook(book.id)">Supprimer</button>
+                  }
+                </div>
+              </div>
+
+              <hr class="my-3" />
+
+              <dl class="row mb-0 small">
+                <dt class="col-6 col-sm-4 text-muted">Numéro</dt>
+                <dd class="col-6 col-sm-8 mb-2">{{ book.number }}</dd>
+
+                <dt class="col-6 col-sm-4 text-muted">Chapitres</dt>
+                <dd class="col-6 col-sm-8 mb-0">{{ book.chapterCount }}</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="book-summary-col">
+          <div class="book-resume h-100 rounded-3 p-4 border">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <h3 class="h6 fw-semibold mb-0">Résumé</h3>
+              <span class="badge text-bg-success">En cours</span>
+            </div>
+
+            <p class="small mb-0">
+              {{ book.description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+  </div>
+
+<app-footer></app-footer>

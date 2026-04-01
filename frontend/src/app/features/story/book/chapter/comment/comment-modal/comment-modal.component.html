@@ -1,0 +1,37 @@
+@if (isOpen()) {
+	<div class="modal-backdrop show" (click)="onBackdropClick()"></div>
+	<div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" (click)="$event.stopPropagation()">
+				<div class="modal-header">
+					<h5 class="modal-title">Mon commentaire</h5>
+					<button type="button" class="btn-close" aria-label="Close" (click)="close.emit()"></button>
+				</div>
+				<div class="modal-body">
+					@if (!isEdit) {
+						@if (comment()) {
+							<p><strong>Auteur:</strong> {{ comment()!.username }}</p>
+							<p><strong>Note:</strong> {{ comment()!.rating }}</p>
+							<p><strong>Date:</strong> {{ comment()!.createdAt | date }}</p>
+							<p><strong>Contenu:</strong></p>
+							<p>{{ comment()!.content }}</p>
+						} @else {
+							<p>Commentaire introuvable.</p>
+						}
+					} @else {
+						<app-comment-edit-modal [comment]="comment()"></app-comment-edit-modal>
+					}
+				</div>
+				<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" (click)="onEditClick()">
+							{{ isEdit ? 'Enregistrer' : 'Editer' }}
+						</button>
+                    @if(!isEdit) {
+						<button type="button" class="btn btn-secondary" (click)="deleteComment()">Supprimer</button>
+                    }
+					<button type="button" class="btn btn-secondary" (click)="onBackdropClick()">Fermer</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}

@@ -1,0 +1,69 @@
+<app-navbar></app-navbar>
+<div class="mw-gradient-bg">
+  <section class="container py-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3">
+      <div>
+        <h1 class="h3 mb-1">News</h1>
+        <p class="text-body-secondary mb-0">Les derniers articles publiés.</p>
+      </div>
+
+      @if (isAdmin) {
+        <a class="btn btn-outline-warning fw-semibold" routerLink="/articles/add">Ajouter un article</a>
+      }
+    </div>
+
+  @if (articleList.isLoading()) {
+    <div class="d-flex justify-content-center my-5">
+      <div class="spinner-border" role="status" aria-label="Chargement">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  @if (!articleList.isLoading() && articleList.value().length === 0) {
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center py-5">
+        <h2 class="h5 mb-2">Aucun article pour le moment</h2>
+        <p class="text-body-secondary mb-4">Crée le premier article pour lancer la section News.</p>
+        @if (isAdmin) {
+          <a class="btn btn-primary" routerLink="/articles/add">Créer un article</a>
+        }
+      </div>
+    </div>
+  }
+
+    @if (!articleList.isLoading() && articleList.value().length > 0) {
+      <div class="row g-3">
+        @for (article of articleList.value(); track article.id) {
+          <div>
+            <article class="card h-100 border-0 shadow-sm">
+              <a class="text-decoration-none" [routerLink]="['/articles', article.id]">
+              <img
+                [src]="article.urlImage && article.urlImage.trim().length > 0 ? article.urlImage : '/images/ArticlesList2.png'"
+                class="card-img-top article-card__image"
+                [alt]="'Image de l\'article ' + article.title"
+              >
+              <div class="card-img-overlay d-flex flex-column article-card__overlay">
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                  <h2 class="card-title h5 mb-0 text-light">{{ article.title }}</h2>
+                  <span class="badge text-bg-secondary flex-shrink-0 text-light">#{{ article.id }}</span>
+                </div>
+
+                <p class=" small mb-4 text-light">
+                  Publié le {{ article.createdAt | date : 'dd/MM/yyyy' }}
+                </p>
+
+                <div class="mt-auto d-flex justify-content-end">
+                  
+                </div>
+              </div>
+              </a>
+            </article>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</div>
+
+<app-footer></app-footer>

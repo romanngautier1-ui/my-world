@@ -1,0 +1,19 @@
+
+.user-card {
+	background: rgba(var(--bs-body-bg-rgb), 0.75);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+}
+
+.user-avatar {
+	width: 56px;
+	height: 56px;
+	border-radius: 999px;
+	display: grid;
+	place-items: center;
+	font-weight: 700;
+	font-size: 1.25rem;
+	color: var(--bs-white);
+	background: linear-gradient(135deg, var(--bs-primary), var(--bs-purple));
+	box-shadow: 0 10px 24px rgba(var(--bs-dark-rgb), 0.35);
+}

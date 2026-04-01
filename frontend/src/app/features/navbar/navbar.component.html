@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-lg bg-dark border-bottom border-body py-3 chapter-navbar" data-bs-theme="dark">
+    <div class="container d-flex align-items-center gap-3">
+		<ul class="nav nav-underline">
+			<li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+				<a class="nav-link fw-bold py-1 px-0 decoration-text-none" routerLink="/home">Accueil</a>
+			</li>
+		</ul>
+
+		<ul class="nav nav-underline ms-auto gap-3">
+			<li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+				<a class="nav-link fw-bold py-1 px-0 decoration-text-none" routerLink="/about">A propos</a>
+			</li>
+			<li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+				<a class="nav-link fw-bold py-1 px-0 decoration-text-none" routerLink="/articles">Actualités</a>
+			</li>
+			<li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+				<a class="nav-link fw-bold py-1 px-0 decoration-text-none" routerLink="/books">Histoire</a>
+			</li>
+			<li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+				<a class="nav-link fw-bold py-1 px-0 decoration-text-none" routerLink="/contact">Contact</a>
+			</li>
+			@if(isAuthenticated()) {
+				<li class="nav-item">
+					<a class="nav-link fw-bold py-1 px-0 decoration-text-none" routerLink="/me">Compte</a>
+				</li>
+			} @else {
+				<li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+					<a class="nav-link fw-bold py-1 px-0 decoration-text-none" routerLink="/login">Connexion</a>
+				</li>
+			}
+		</ul>
+    </div>
+</nav>

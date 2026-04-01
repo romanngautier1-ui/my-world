@@ -1,0 +1,35 @@
+.book-row + .book-row {
+	margin-top: 2rem;
+}
+
+.book-card {
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	position: relative;
+	overflow: hidden;
+}
+
+.book-card__overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(255, 255, 255, 0.82);
+	pointer-events: none;
+}
+
+.book-card__body {
+	position: relative;
+	z-index: 1;
+}
+
+.book-summary-col {
+	width: 100%;
+}
+
+@media (min-width: 768px) {
+	.book-summary-col {
+		width: 42%;
+		max-width: 460px;
+		flex: 0 0 auto;
+	}
+}

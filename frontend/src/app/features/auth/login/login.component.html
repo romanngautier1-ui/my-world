@@ -1,0 +1,61 @@
+<app-navbar></app-navbar>
+<div class="background">
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-5 col-xl-4">
+      <div class="card border-0 shadow-sm contact-card">
+        <div class="card-body p-4">
+          <h3 class="card-title text-center mb-1">Page de connexion</h3>
+          <p class="text-center text-muted small mb-4">{{ message() }}</p>
+
+          <form (submit)="onSubmit($event)">
+            <div class="mb-3">
+              <label for="username" class="form-label">Nom d'utilisateur</label>
+              <input
+                #usernameField
+                id="username"
+                type="text"
+                name="username"
+                class="form-control contact-input"
+                autocomplete="username"
+                [value]="username()"
+                (input)="username.set(usernameField.value)"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Mot de passe</label>
+              <input
+                #passwordField
+                id="password"
+                type="password"
+                name="password"
+                class="form-control contact-input"
+                autocomplete="current-password"
+                [value]="password()"
+                (input)="password.set(passwordField.value)"
+                required
+              />
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">
+                Se connecter
+              </button>
+            </div>
+          </form>
+          <div class="d-flex flex-column gap-1 mt-3">
+            <a class="btn btn-link text-decoration-none" routerLink="/register">S'enregistrer</a>
+            <a class="btn btn-link text-decoration-none" routerLink="/reset-password">Mot de passe oublié ?</a>
+          </div>
+        </div>
+      </div>
+      @if (validationMessage()) {
+	      <div class="alert alert-success text-center mt-3" role="alert">
+		      {{ validationMessage() }}
+	      </div>
+      }
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>
+</div>
