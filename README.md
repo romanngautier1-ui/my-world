@@ -1,21 +1,30 @@
 # My World — Fullstack
 
-MyWorld est une application web fullstack (API Spring Boot + front Angular) autour de **livres**, **chapitres** et **articles**.
+MyWorld is a fullstack web application (Spring Boot REST API + Angular frontend) built around **books**, **chapters**, and **articles**.
 
-## Fonctionnalités (résumé)
+## Features (high level)
 
-- Auth **JWT stateless** + vérification email + reset password
-- Gestion de contenu: livres/chapitres/articles (avec envoie de mail automatique aux utilisateurs lors de l'ajout d'un nouveau chapitre ou d'un nouvel article)
-- Interaction: commentaires + historique de lecture
-- Uploads: images + PDFs servis via `/api/uploads/*`
-- Chapitres: texte brut **ou** PDF uploadé, rendu HTML via extraction PDF
+- Stateless **JWT auth** + email verification + password reset
+- Content management: books/chapters/articles (automatic email notification to users when a new chapter or article is published)
+- Engagement: comments + reading history
+- Uploads: images + PDFs served via `/api/uploads/*`
+- Chapters: plain text **or** uploaded PDF, rendered to HTML via PDF text extraction
 
 ## Stack
 
-- Backend: Java 21, Spring Boot 4, Spring Security, JPA/Hibernate, MySQL (profil `local`), PDFBox
-- Frontend: Angular 21 — API URL: `frontend/src/environments/environment.ts`
+- Backend: Java 21, Spring Boot 4, Spring Security, JPA/Hibernate, MySQL (local profile), PDFBox, Maven
+- Frontend: Angular 21, Bootstrap — API URL: `frontend/src/environments/environment.ts`
 
-## Démarrage rapide
+<p>
+    <img src="https://s3.amazonaws.com/angularminds.com/new-blog-images/angular-wordmark-gradient.png" alt="Angular" height="38" />
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fe4developer.com%2Fwp-content%2Fuploads%2F2018%2F01%2Fspring-boot.png&f=1&nofb=1&ipt=f7cbde277c9caa6a16c3c0518c786904cb7d30a4cb6b52bf0e8cbbf77aac342d" alt="Spring Boot" height="38" />
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmiro.medium.com%2Fv2%2Fresize%3Afit%3A797%2F1*8X26HYxkQ1YPkrW2oliKpw.png&f=1&nofb=1&ipt=3ce24bcc448816ce887cb0ed9a26f87f038cee5e37c97c7895f34defceb4d758" alt="Spring Security" height="38" />
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpngimg.com%2Fd%2Fmysql_PNG23.png&f=1&nofb=1&ipt=e2591dd4c8074fc52876265bd8a59415f70a72ef8ed82599383db9f78524b6ff" alt="MySQL" height="38" />
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogowik.com%2Fcontent%2Fuploads%2Fimages%2Fmaven-apache3537.jpg&f=1&nofb=1&ipt=3e27c589ced53fa913e0841209cee2b72129cf3edf184ba692c28fda5da1fa81" alt="Maven" height="38" />
+    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbrandlogos.net%2Fwp-content%2Fuploads%2F2021%2F09%2Fbootstrap-logo.png&f=1&nofb=1&ipt=dda5712c2bf0ddcffa3472a6aee27565337534d67217a8ea89ea1fcc953c9628" alt="Bootstrap" height="38" />
+</p>
+
+## Quick start
 
 ### Backend
 
@@ -34,99 +43,96 @@ npm install
 npm start
 ```
 
-Front (local): `http://localhost:4200`
+Frontend (local): `http://localhost:4200`
 
 ## Documentation
 
-- API / backend (routes, auth, uploads, PDF, profils): [backend/myworld/README.md](backend/myworld/README.md)
+- Backend API (routes, auth, uploads, PDF, profiles): [backend/myworld/README.md](backend/myworld/README.md)
 - Frontend (Angular scripts): [frontend/README.md](frontend/README.md)
 
-## Illustrations app
+## App screenshots
 
-Captures d’écran: [Illustrations site](Illustrations%20site). Le nom du fichier correspond à la fonctionnalité (toutes les fonctionnalités ne sont pas représentées).
+Screenshots live in [Illustrations app](Illustrations%20app). File names match the feature (not every feature is represented).
 
 <details>
-<summary>Voir les captures</summary>
+<summary>Show screenshots</summary>
 
-- A propos
+- Home
 
-    ![A propos](<Illustrations app/A propos.png>)
+    ![Home](<Illustrations app/Accueil.png>)
 
-- Accueil
+- Register
 
-    ![Accueil](<Illustrations app/Accueil.png>)
+    ![Register](<Illustrations app/S'enregistrer.png>)
 
-- Ajouter commentaire
+- Login
 
-    ![Ajouter commentaire](<Illustrations app/Ajouter commentaire.png>)
+    ![Login](<Illustrations app/Connexion.png>)
 
-- Ajouter un livre
+- Forgot password
 
-    ![Ajouter un livre](<Illustrations app/Ajouter un livre.png>)
+    ![Forgot password](<Illustrations app/Mot de passe oublié.png>)
 
-- Compte utilisateur
+- User account
 
-    ![Compte utilisateur](<Illustrations app/Compte utilisateur.png>)
+    ![User account](<Illustrations app/Compte utilisateur.png>)
 
-- Connexion
+- Books list
 
-    ![Connexion](<Illustrations app/Connexion.png>)
+    ![Books list](<Illustrations app/Liste des livres.png>)
+
+- Add a book
+
+    ![Add a book](<Illustrations app/Ajouter un livre.png>)
+
+- Chapters list
+
+    ![Chapters list](<Illustrations app/Liste des chapitres.png>)
+
+- Read chapter + download
+
+    ![Read chapter + download](<Illustrations app/Lecture chapitre et téléchargement.png>)
+
+- Comments area
+
+    ![Comments area](<Illustrations app/Espace commentaires.png>)
+
+- Add comment
+
+    ![Add comment](<Illustrations app/Ajouter commentaire.png>)
+
+- View my comment
+
+    ![View my comment](<Illustrations app/Voir son commentaire.png>)
+
+- Articles list
+
+    ![Articles list](<Illustrations app/Liste des articles.png>)
+
+- Read an article (1)
+
+    ![Read an article (1)](<Illustrations app/Lecture d'un article (1).png>)
+
+- Read an article (2)
+
+    ![Read an article (2)](<Illustrations app/Lecture d'un article (2).png>)
 
 - Contact
 
     ![Contact](<Illustrations app/Contact.png>)
 
-- Editer un livre
+- About
 
-    ![Editer un livre](<Illustrations app/Editer un  livre.png>)
+    ![About](<Illustrations app/A propos.png>)
 
-- Espace commentaires
-
-    ![Espace commentaires](<Illustrations app/Espace commentaires.png>)
-
-- Lecture chapitre et téléchargement
-
-    ![Lecture chapitre et téléchargement](<Illustrations app/Lecture chapitre et téléchargement.png>)
-
-- Lecture d'un article (1)
-
-    ![Lecture d'un article (1)](<Illustrations app/Lecture d'un article (1).png>)
-
-- Lecture d'un article (2)
-
-    ![Lecture d'un article (2)](<Illustrations app/Lecture d'un article (2).png>)
-
-- Liste des articles
-
-    ![Liste des articles](<Illustrations app/Liste des articles.png>)
-
-- Liste des chapitres
-
-    ![Liste des chapitres](<Illustrations app/Liste des chapitres.png>)
-
-- Liste des livres
-
-    ![Liste des livres](<Illustrations app/Liste des livres.png>)
-
-- Mot de passe oublié
-
-    ![Mot de passe oublié](<Illustrations app/Mot de passe oublié.png>)
-
-- S'enregistrer
-
-    ![S'enregistrer](<Illustrations app/S'enregistrer.png>)
-
-- Voir son commentaire
-
-    ![Voir son commentaire](<Illustrations site/Voir son commentaire.png>)
 </details>
 
-## Roadmap (en réflexion)
+## Roadmap (work in progress)
 
-- Paiement Stripe pour débloquer un chapitre ou un livre + facture PDF: voir la section “Pistes d’amélioration” dans [backend/myworld/README.md](backend/myworld/README.md)
+- Stripe payments to unlock a chapter or a full book + PDF invoice generation: see “Pistes d’amélioration” in [backend/myworld/README.md](backend/myworld/README.md)
 
-## Structure du repo
+## Repo structure
 
-- `backend/` : backend Spring Boot
-- `frontend/` : frontend Angular
-- `Illustrations app/` : captures d’écran
+- `backend/`: Spring Boot backend
+- `frontend/`: Angular frontend
+- `Illustrations app/`: screenshots
