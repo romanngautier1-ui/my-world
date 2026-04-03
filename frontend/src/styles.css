@@ -55,6 +55,8 @@ body {
 
 /* ── Shared full-page form layout ── */
 
+.user-profile-page,
+.home-page,
 .reset-password-page,
 .reset-password-link-page,
 .verify-email-page,
@@ -64,6 +66,7 @@ body {
 	flex-direction: column;
 }
 
+.user-profile-body,
 .home-body,
 .reset-password-body,
 .reset-password-link-body,
@@ -73,6 +76,7 @@ body {
 	flex-direction: column;
 }
 
+.user-profile-content,
 .home-content,
 .reset-password-content,
 .reset-password-link-content,

@@ -1,14 +1,17 @@
-<app-navbar></app-navbar>
-<div class="background home-body">
-	<div class="container py-4 home-content">
-		@if (validationMessage()) {
-			<div class="container mt-3">
-				<div class="alert alert-success text-center" role="alert">
-					{{ validationMessage() }}
+<div class="home-page">
+	<app-navbar></app-navbar>
+	<div class="background home-body">
+		<div class="container py-4 home-content">
+			@if (validationMessage()) {
+				<div class="container mt-3">
+					<div class="alert alert-success text-center" role="alert">
+						{{ validationMessage() }}
+					</div>
 				</div>
-			</div>
-		}
+			}
 
-		<h2 class="note">My World</h2>
+			<h2 class="note">My World</h2>
+		</div>
 	</div>
+	<app-footer></app-footer>
 </div>

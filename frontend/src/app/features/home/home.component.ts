@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../core/auth/auth.service';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { FooterComponent } from '../footer/footer.component';
 
 @Component({
   selector: 'app-home',
-  imports: [NavbarComponent, NavbarComponent],
+  imports: [NavbarComponent, NavbarComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })

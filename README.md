@@ -1,87 +1,132 @@
-# My World
+# My World — Fullstack
 
-Ce projet est une application web complète composée d'un backend (API Java Spring Boot) et d'un frontend (application Angular). Elle permet de gérer et visualiser des contenus variés, avec une interface utilisateur moderne et sécurisée.
+MyWorld est une application web fullstack (API Spring Boot + front Angular) autour de **livres**, **chapitres** et **articles**.
 
-## Présentation du projet
+## Fonctionnalités (résumé)
 
-- **Backend** : API REST développée avec Spring Boot, gérant la logique métier, la sécurité, la persistance des données et l'exposition des endpoints.
-- **Frontend** : Application Angular offrant une interface utilisateur réactive, connectée à l'API pour l'affichage et la gestion des données.
+- Auth **JWT stateless** + vérification email + reset password
+- Gestion de contenu: livres/chapitres/articles (avec envoie de mail automatique aux utilisateurs lors de l'ajout d'un nouveau chapitre ou d'un nouvel article)
+- Interaction: commentaires + historique de lecture
+- Uploads: images + PDFs servis via `/api/uploads/*`
+- Chapitres: texte brut **ou** PDF uploadé, rendu HTML via extraction PDF
 
-## Technologies utilisées
+## Stack
+
+- Backend: Java 21, Spring Boot 4, Spring Security, JPA/Hibernate, MySQL (profil `local`), PDFBox
+- Frontend: Angular 21 — API URL: `frontend/src/environments/environment.ts`
+
+## Démarrage rapide
 
 ### Backend
-- **Java 17+**
-- **Spring Boot** (framework principal)
-- **Maven** (gestionnaire de dépendances)
-- **Base de données** : MySQL (modifiable selon configuration)
-- **Spring Security** (authentification/autorisation)
-- **JPA/Hibernate** (ORM)
 
-### Frontend
-- **Angular** (framework principal)
-- **TypeScript**
-- **RxJS** (programmation réactive)
-- **Angular CLI** (outils de build et de développement)
-- **CSS3** / **HTML5**
-
-## Installation et lancement
-
-### Prérequis
-- **Node.js** (v16+ recommandé)
-- **npm** ou **yarn**
-- **Java 17+**
-- **Maven**
-- **MySQL** (ou autre base compatible)
-
-### 1. Cloner le dépôt
-```bash
-git clone <url-du-repo>
-cd my-world
-```
-
-### 2. Configuration de la base de données
-- Modifier les fichiers `application.properties` dans `backend/myworld/src/main/resources/` selon vos paramètres MySQL (utilisateur, mot de passe, nom de la base) et selon vos paramètres d'email (email et mot de passe).
-
-### 3. Lancer le backend
 ```bash
 cd backend/myworld
-mvn clean install
-./mvnw spring-boot:run -Dspring-boot.run.profiles=local (démarrage sur la configuration local)
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
-L'API sera disponible sur `http://localhost:8080` par défaut.
 
-### 4. Lancer le frontend
+API (local): `http://localhost:8080`
+
+### Frontend
+
 ```bash
 cd frontend
 npm install
-ng serve
+npm start
 ```
-L'application sera accessible sur `http://localhost:4200`.
 
-## Structure du projet
+Front (local): `http://localhost:4200`
 
-- `backend/` : code source du backend Spring Boot
-- `frontend/` : code source du frontend Angular
+## Documentation
 
-## Scripts utiles
+- API / backend (routes, auth, uploads, PDF, profils): [backend/myworld/README.md](backend/myworld/README.md)
+- Frontend (Angular scripts): [frontend/README.md](frontend/README.md)
 
-- **Backend**
-    - `mvn clean install` : build du backend
-    - `mvn spring-boot:run` : lancement du serveur API
-- **Frontend**
-    - `npm install` : installation des dépendances
-    - `ng serve` : lancement du serveur de développement
+## Illustrations app
 
-## Contribution
+Captures d’écran: [Illustrations site](Illustrations%20site). Le nom du fichier correspond à la fonctionnalité (toutes les fonctionnalités ne sont pas représentées).
 
-Les contributions sont les bienvenues !
+<details>
+<summary>Voir les captures</summary>
 
-1. Forkez le projet
-2. Créez une branche (`git checkout -b feature/ma-feature`)
-3. Commitez vos modifications (`git commit -am 'Ajout d'une feature'`)
-4. Poussez la branche (`git push origin feature/ma-feature`)
-5. Ouvrez une Pull Request
+- A propos
 
-## Licence
+    ![A propos](<Illustrations app/A propos.png>)
 
-Ce projet est sous licence MIT.
+- Accueil
+
+    ![Accueil](<Illustrations app/Accueil.png>)
+
+- Ajouter commentaire
+
+    ![Ajouter commentaire](<Illustrations app/Ajouter commentaire.png>)
+
+- Ajouter un livre
+
+    ![Ajouter un livre](<Illustrations app/Ajouter un livre.png>)
+
+- Compte utilisateur
+
+    ![Compte utilisateur](<Illustrations app/Compte utilisateur.png>)
+
+- Connexion
+
+    ![Connexion](<Illustrations app/Connexion.png>)
+
+- Contact
+
+    ![Contact](<Illustrations app/Contact.png>)
+
+- Editer un livre
+
+    ![Editer un livre](<Illustrations app/Editer un  livre.png>)
+
+- Espace commentaires
+
+    ![Espace commentaires](<Illustrations app/Espace commentaires.png>)
+
+- Lecture chapitre et téléchargement
+
+    ![Lecture chapitre et téléchargement](<Illustrations app/Lecture chapitre et téléchargement.png>)
+
+- Lecture d'un article (1)
+
+    ![Lecture d'un article (1)](<Illustrations app/Lecture d'un article (1).png>)
+
+- Lecture d'un article (2)
+
+    ![Lecture d'un article (2)](<Illustrations app/Lecture d'un article (2).png>)
+
+- Liste des articles
+
+    ![Liste des articles](<Illustrations app/Liste des articles.png>)
+
+- Liste des chapitres
+
+    ![Liste des chapitres](<Illustrations app/Liste des chapitres.png>)
+
+- Liste des livres
+
+    ![Liste des livres](<Illustrations app/Liste des livres.png>)
+
+- Mot de passe oublié
+
+    ![Mot de passe oublié](<Illustrations app/Mot de passe oublié.png>)
+
+- S'enregistrer
+
+    ![S'enregistrer](<Illustrations app/S'enregistrer.png>)
+
+- Voir son commentaire
+
+    ![Voir son commentaire](<Illustrations site/Voir son commentaire.png>)
+</details>
+
+## Roadmap (en réflexion)
+
+- Paiement Stripe pour débloquer un chapitre ou un livre + facture PDF: voir la section “Pistes d’amélioration” dans [backend/myworld/README.md](backend/myworld/README.md)
+
+## Structure du repo
+
+- `backend/` : backend Spring Boot
+- `frontend/` : frontend Angular
+- `Illustrations app/` : captures d’écran
