@@ -1,18 +1,19 @@
+
 # MyWorld — Backend
 
-Backend Spring Boot du projet **MyWorld**.
+Spring Boot backend for the **MyWorld** project.
 
-## Description du projet
+## Project overview
 
-MyWorld est une API REST qui alimente une application de lecture/écriture avec :
+MyWorld is a REST API that powers a reading/writing application with:
 
-- **Bibliothèque** : gestion de **livres** et **chapitres**.
-- **Contenus éditoriaux** : gestion d’**articles** (avec image).
-- **Interaction** : **commentaires** sur les chapitres et **historique de lecture** (chapitres lus).
-- **Comptes utilisateurs** : inscription, **vérification email**, connexion **JWT**, réinitialisation de mot de passe.
-- **Notifications email** : envoi automatique d’emails lors de l’ajout d’un article / chapitre (utilisateurs actifs).
-- **Uploads** : stockage de fichiers (images + PDF) sur disque, servis via `GET /api/uploads/{filename}`.
-- **Service PDF** : un chapitre peut être stocké soit comme **texte brut**, soit comme **URL vers un PDF uploadé** ; le backend peut **extraire le texte du PDF** et le rendre en HTML.
+- **Library**: managing **books** and **chapters**.
+- **Editorial content**: managing **articles** (with an image).
+- **Interaction**: **comments** on chapters and **reading history** (read chapters).
+- **User accounts**: registration, **email verification**, **JWT** login, password reset.
+- **Email notifications**: automatic emails when a new article/chapter is added (active users).
+- **Uploads**: file storage (images + PDFs) on disk, served via `GET /api/uploads/{filename}`.
+- **PDF service**: a chapter can be stored either as **raw text** or as a **URL to an uploaded PDF**; the backend can **extract text from the PDF** and render it as HTML.
 
 ## Stack
 
@@ -22,19 +23,19 @@ MyWorld est une API REST qui alimente une application de lecture/écriture avec 
 - Persistence: Spring Data JPA
 - Mapping: MapStruct + Lombok
 
-## Prérequis
+## Prerequisites
 
-- JDK 21 installé
-- (Optionnel, profil `local`) MySQL en local
+- JDK 21 installed
+- (Optional, `local` profile) local MySQL
 
-## Lancer le projet
+## Run the project
 
-### 1) Démarrage sans profil (config via variables d'environnement)
+### 1) Start without profile (config via environment variables)
 
-Le fichier `src/main/resources/application.properties` contient uniquement de la configuration **commune** (sans secrets).
-Pour démarrer sans profil, il faut fournir la configuration via variables d'environnement.
+The file `src/main/resources/application.properties` contains only **shared** configuration (no secrets).
+To start without a profile, you must provide configuration through environment variables.
 
-- Exemple (DB + JWT) :
+- Example (DB + JWT):
 
 ```bash
 export SPRING_DATASOURCE_URL='jdbc:mysql://localhost:3306/myworld'
@@ -44,30 +45,30 @@ export JWT_SECRET='change-me-please-change-me-please-32bytes+'
 ./mvnw spring-boot:run
 ```
 
-### 2) Profil `local` (MySQL + seed)
+### 2) `local` profile (MySQL + seed)
 
-Le profil `local` est prévu pour démarrer avec MySQL et initialiser la base avec un script SQL.
+The `local` profile is meant to start with MySQL and initialize the database with an SQL script.
 
 - Configuration: `src/main/resources/application-local.properties`
-  - Contient `spring.datasource.*` + config JPA + activation du seed `classpath:db/mysql/data.sql`
+  - Contains `spring.datasource.*` + JPA config + enables seed `classpath:db/mysql/data.sql`
 
-- Run avec profil `local`:
+- Run with `local` profile:
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-Tu peux surcharger n'importe quel paramètre via env (ex: `SPRING_DATASOURCE_URL`, `JWT_SECRET`, `APP_FRONTEND_BASE_URL`).
+You can override any property via env (e.g. `SPRING_DATASOURCE_URL`, `JWT_SECRET`, `APP_FRONTEND_BASE_URL`).
 
-### 3) Profil `prod`
+### 3) `prod` profile
 
-Le profil `prod` s'attend à recevoir toute la configuration (DB/JWT/CORS/URLs) via variables d'environnement ou un gestionnaire de secrets.
+The `prod` profile expects all configuration (DB/JWT/CORS/URLs) to be provided via environment variables or a secrets manager.
 
 ```bash
 java -jar target/myworld-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
 
-Ou via le jar:
+Or (example) using the JAR with the `local` profile:
 
 ```bash
 java -jar target/myworld-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
@@ -75,92 +76,92 @@ java -jar target/myworld-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
 
 ## Tests
 
-Les tests utilisent une base H2 en mémoire via `src/test/resources/application.properties`.
+Tests use an in-memory H2 database via `src/test/resources/application.properties`.
 
-- Lancer les tests:
+- Run tests:
 
 ```bash
 ./mvnw test
 ```
 
-## Routes API
+## API routes
 
-Les routes ci-dessous sont dérivées des controllers Spring (`src/main/java/com/app/myworld/controller`).
-Par défaut, Spring Security est en mode **stateless** (JWT) :
+The routes below are derived from the Spring controllers (`src/main/java/com/app/myworld/controller`).
+By default, Spring Security runs in **stateless** mode (JWT):
 
-- **Publiques**: endpoints d’auth (`/api/auth/**`), `GET /api/uploads/**`, `GET /api/books` / `GET /api/books/{id}`, `GET /api/articles` / `GET /api/articles/{id}` / `GET /api/articles/{id}/neighbors`, endpoints mail (`/api/mails/**`).
-- **Authentifiées**: tout le reste.
-- **ADMIN**: certaines routes sont restreintes via `@PreAuthorize("hasRole('ADMIN')")`.
+- **Public**: auth endpoints (`/api/auth/**`), `GET /api/uploads/**`, `GET /api/books` / `GET /api/books/{id}`, `GET /api/articles` / `GET /api/articles/{id}` / `GET /api/articles/{id}/neighbors`, mail endpoints (`/api/mails/**`).
+- **Authenticated**: everything else.
+- **ADMIN**: some routes are restricted via `@PreAuthorize("hasRole('ADMIN')")`.
 
-### Auth (JWT) et gestion de compte
+### Auth (JWT) & account management
 
 - `POST /api/auth/register` (public)
-  - Body JSON (`RegisterRequest`) : `username`, `email`, `password`
-  - Effet : crée l’utilisateur (role `USER`, `isActive=false`), puis déclenche l’envoi d’un email de vérification.
+  - JSON body (`RegisterRequest`): `username`, `email`, `password`
+  - Effect: creates the user (role `USER`, `isActive=false`), then triggers a verification email.
 - `GET /api/auth/verify-email?token=...` (public)
-  - Effet : active le compte (`isActive=true`).
+  - Effect: activates the account (`isActive=true`).
 - `POST /api/auth/login` (public)
-  - Body JSON (`LoginRequest`) : `username`, `password`
-  - Réponse (`AuthResponse`) : `token`, `username`, `email`, `role`
+  - JSON body (`LoginRequest`): `username`, `password`
+  - Response (`AuthResponse`): `token`, `username`, `email`, `role`
 - `POST /api/auth/reset-password` (public)
-  - Body JSON: **string** contenant l’email (ex: `"user@example.com"`)
-  - Effet : si l’utilisateur existe, génère un token de reset (30 min) et envoie un lien vers le front.
+  - JSON body: **string** containing the email (e.g. `"user@example.com"`)
+  - Effect: if the user exists, generates a reset token (30 min) and sends a link to the frontend.
 - `POST /api/auth/reset-password-link` (public)
-  - Body JSON (`ResetPasswordRequest`) : `token`, `newPassword`
+  - JSON body (`ResetPasswordRequest`): `token`, `newPassword`
 
-Utilisation du token :
+Token usage:
 
 - Header: `Authorization: Bearer <JWT>`
-- Le JWT inclut notamment `userId` et `tokenVersion`. Le backend invalide un token si la `tokenVersion` ne correspond plus à celle stockée en base.
+- The JWT includes `userId` and `tokenVersion`. The backend invalidates a token if `tokenVersion` no longer matches the value stored in the database.
 
-Routes utilisateur :
+User routes:
 
-- `GET /api/users/me` (authentifié)
-- `PATCH /api/users/me/change-password` (authentifié)
-- `PATCH /api/users/me/update-current-user` (authentifié)
-  - Effet : met à jour l’utilisateur et retourne un **nouveau JWT** (rotation via `tokenVersion`).
+- `GET /api/users/me` (authenticated)
+- `PATCH /api/users/me/change-password` (authenticated)
+- `PATCH /api/users/me/update-current-user` (authenticated)
+  - Effect: updates the user and returns a **new JWT** (rotation via `tokenVersion`).
 - `DELETE /api/users/me` (ADMIN)
 
 ### Uploads (images + PDF)
 
-Le backend ne fournit pas d’endpoint “upload générique”. Les uploads se font via certains endpoints `multipart/form-data` (création/mise à jour), et les fichiers sont ensuite servis par:
+The backend does not provide a “generic upload endpoint”. Uploads are handled through some `multipart/form-data` endpoints (create/update), and files are served through:
 
 - `GET /api/uploads/{filename}` (public)
 
-Stockage & limites:
+Storage & limits:
 
-- Dossier: `app.upload.dir` (par défaut `${user.home}/myworld/uploads`)
-- Taille max: `10MB` par fichier (`spring.servlet.multipart.max-file-size`) et `12MB` par requête.
-- Extensions supportées:
+- Directory: `app.upload.dir` (default `${user.home}/myworld/uploads`)
+- Max size: `10MB` per file (`spring.servlet.multipart.max-file-size`) and `12MB` per request.
+- Supported extensions:
   - images: `jpg`, `jpeg`, `png`, `gif`, `webp`
   - PDF: `pdf`
 
-Cas d’usage:
+Use cases:
 
-- Articles/livres : `imageFile` (upload) **ou** `urlImage` (URL externe)
-- Chapitres : `pdfFile` (upload) **ou** `content` (texte brut)
+- Articles/books: `imageFile` (upload) **or** `urlImage` (external URL)
+- Chapters: `pdfFile` (upload) **or** `content` (raw text)
 
-### Service PDF (chapitres)
+### PDF service (chapters)
 
-Un chapitre peut stocker son contenu comme une URL vers un PDF uploadé (`.../api/uploads/<uuid>.pdf`) ou comme texte brut.
+A chapter can store its content either as a URL to an uploaded PDF (`.../api/uploads/<uuid>.pdf`) or as raw text.
 
-- `GET /api/chapters/{id}/html` (authentifié)
-  - Retourne un HTML “safe” en `<p>` :
-    - si `content` pointe vers un PDF uploadé, le backend extrait le texte via **PDFBox** puis formate en paragraphes
-    - sinon, formate directement le texte brut en paragraphes
+- `GET /api/chapters/{id}/html` (authenticated)
+  - Returns “safe” HTML in `<p>`:
+    - if `content` points to an uploaded PDF, the backend extracts text using **PDFBox** and then formats it into paragraphs
+    - otherwise, it formats the raw text into paragraphs
 - `GET /api/chapters/{id}/pdf` (ADMIN)
-  - Télécharge le PDF associé au chapitre si le contenu est un upload PDF.
+  - Downloads the PDF linked to the chapter if the content is a PDF upload.
 
 ### Articles
 
 - `GET /api/articles`
 - `GET /api/articles/{id}`
 - `GET /api/articles/{id}/neighbors`
-- `POST /api/articles` (ADMIN) (multipart) (envoie de mail automatique pour avertir les utilisateurs d'un nouvel article)
+- `POST /api/articles` (ADMIN) (multipart) (automatic email sent to notify users about a new article)
 - `PATCH /api/articles/{id}` (ADMIN) (multipart)
 - `DELETE /api/articles/{id}` (ADMIN)
 
-### Livres
+### Books
 
 - `GET /api/books`
 - `GET /api/books/{id}`
@@ -168,7 +169,7 @@ Un chapitre peut stocker son contenu comme une URL vers un PDF uploadé (`.../ap
 - `PATCH /api/books/{id}` (ADMIN) (multipart)
 - `DELETE /api/books/{id}` (ADMIN)
 
-### Chapitres
+### Chapters
 
 - `GET /api/chapters`
 - `GET /api/chapters/{id}`
@@ -177,36 +178,36 @@ Un chapitre peut stocker son contenu comme une URL vers un PDF uploadé (`.../ap
 - `GET /api/chapters/{id}/neighbors`
 - `POST /api/chapters/{id}/likes/increment`
 - `POST /api/chapters/{id}/likes/decrement`
-- `POST /api/chapters` (ADMIN) (multipart) (envoie de mail automatique pour avertir les utilisateurs d'un nouveau chapitre)
+- `POST /api/chapters` (ADMIN) (multipart) (automatic email sent to notify users about a new chapter)
 - `PATCH /api/chapters/{id}` (ADMIN) (multipart)
 - `DELETE /api/chapters/{id}` (ADMIN)
 
-### Lecture de chapitres (Historique des chapitres lus)
+### Chapter reads (read chapters history)
 
 - `GET /api/chapter-reads`
 - `GET /api/chapter-reads/exists?userId=...&chapterId=...`
 - `POST /api/chapter-reads`
 - `DELETE /api/chapter-reads/{id}`
 
-### Commentaires
+### Comments
 
 - `GET /api/comments`
 - `GET /api/comments/{id}`
 - `GET /api/comments/exists?userId=...&chapterId=...`
-- `POST /api/comments` (authentifié)
-- `PATCH /api/comments/{id}` (authentifié)
-- `DELETE /api/comments/{id}` (authentifié)
+- `POST /api/comments` (authenticated)
+- `PATCH /api/comments/{id}` (authenticated)
+- `DELETE /api/comments/{id}` (authenticated)
 
-### Utilisateurs
+### Users
 
-- `GET /api/users/me` (authentifié)
-- `PATCH /api/users/me/change-password` (authentifié)
-- `PATCH /api/users/me/update-current-user` (authentifié)
+- `GET /api/users/me` (authenticated)
+- `PATCH /api/users/me/change-password` (authenticated)
+- `PATCH /api/users/me/update-current-user` (authenticated)
 - `DELETE /api/users/me` (ADMIN)
 
 ### Mails
 
-Endpoints actuellement **publics** (voir `SecurityConfig`) :
+Endpoints currently **public** (see `SecurityConfig`):
 
 - `POST /api/mails/send`
 - `POST /api/mails/sendWithAttachment`
@@ -214,83 +215,83 @@ Endpoints actuellement **publics** (voir `SecurityConfig`) :
 
 ### Uploads
 
-- `GET /api/uploads/{filename}` (public) — sert une image/PDF déjà stocké sur disque.
+- `GET /api/uploads/{filename}` (public) — serves an image/PDF already stored on disk.
 
-## Structure du projet
+## Project structure
 
 - `src/main/java/com/app/myworld/`
-  - `controller/` : contrôleurs REST (Auth, Article, Book, Chapter, ChapterRead, Comment, Email, Upload, User)
-  - `service/` : logique métier
-  - `repository/` : repositories Spring Data
-  - `model/` : entités JPA
-  - `dto/` : DTOs (requests/responses)
-  - `mapper/` : mappers MapStruct
-  - `security/` : sécurité (Spring Security)
-  - `config/` : configuration applicative
+  - `controller/`: REST controllers (Auth, Article, Book, Chapter, ChapterRead, Comment, Email, Upload, User)
+  - `service/`: business logic
+  - `repository/`: Spring Data repositories
+  - `model/`: JPA entities
+  - `dto/`: DTOs (requests/responses)
+  - `mapper/`: MapStruct mappers
+  - `security/`: security (Spring Security)
+  - `config/`: application configuration
 
 - `src/main/resources/`
-  - `application.properties` : configuration par défaut
-  - `application-local.properties` : profil `local` (MySQL + seed)
-  - `db/mysql/data.sql` : données de seed
+  - `application.properties`: default configuration
+  - `application-local.properties`: `local` profile (MySQL + seed)
+  - `db/mysql/data.sql`: seed data
 
 ## Notes
 
-- Les implémentations de mappers MapStruct sont générées dans `target/generated-sources/annotations`.
-- Si ton IDE indique que la configuration Maven/Java n’est pas à jour avec le `pom.xml`, un rechargement du workspace Java/Maven règle généralement le problème.
+- MapStruct mapper implementations are generated in `target/generated-sources/annotations`.
+- If your IDE reports Maven/Java config out of sync with `pom.xml`, reloading the Java/Maven workspace usually fixes it.
 
-## Pistes d’amélioration / idées de fonctionnalités
+## Improvement ideas / feature backlog
 
-Ces idées sont volontairement “incrémentales” et s’appuient sur les patterns déjà présents (services, DTO, events, security).
+These ideas are intentionally incremental and reuse patterns already present (services, DTOs, events, security).
 
-### Sécurité / Auth
+### Security / Auth
 
-- **Endpoint de logout** : incrémenter `User.tokenVersion` pour invalider le JWT courant côté serveur (le mécanisme existe déjà via `generateNewToken`).
-- **Refresh tokens** (optionnel) : access token court + refresh token (rotation + révocation), plutôt que JWT longue durée.
-- **Sécuriser /api/mails/** : aujourd’hui les endpoints mail sont publics (voir `SecurityConfig`) → ajouter auth + rate-limit + anti-abus.
-- **Validation d’entrée homogène** : standardiser les erreurs (format JSON unique) via `@ControllerAdvice` (déjà un `GlobalExceptionHandler`).
+- **Logout endpoint**: increment `User.tokenVersion` to invalidate the current JWT server-side (the mechanism already exists via `generateNewToken`).
+- **Refresh tokens** (optional): short-lived access token + refresh token (rotation + revocation) instead of a long-lived JWT.
+- **Secure /api/mails/**: mail endpoints are currently public (see `SecurityConfig`) → add auth + rate limiting + anti-abuse measures.
+- **Consistent input validation**: standardize errors (single JSON format) via `@ControllerAdvice` (there is already a `GlobalExceptionHandler`).
 
-### Uploads / Fichiers
+### Uploads / Files
 
-- **Nettoyage des fichiers orphelins** : lors d’un delete d’article/livre/chapitre, supprimer le fichier uploadé associé (si le contenu pointe vers `/api/uploads/...`).
-- **Mise en cache** : `Cache-Control` plus agressif pour les images (si les filenames sont immuables UUID), tout en gardant `no-cache` si souhaité pour les PDFs.
+- **Orphaned file cleanup**: when deleting an article/book/chapter, delete its associated uploaded file (if the content points to `/api/uploads/...`).
+- **Caching**: more aggressive `Cache-Control` for images (if filenames are immutable UUIDs), while keeping `no-cache` if desired for PDFs.
 
-### PDF / Chapitres
+### PDF / Chapters
 
-- **Prévisualisation plus riche** : conserver en base une version “texte extrait” (ou HTML) à la création/màj, pour éviter de retraiter le PDF à chaque `GET /html`.
+- **Richer preview**: store an “extracted text” (or HTML) version in the DB at create/update time, to avoid reprocessing the PDF on every `GET /html`.
 
-### Paiement (Stripe) + facture PDF (en réflexion)
+### Payments (Stripe) + PDF invoice (work-in-progress)
 
-Objectif envisagé (pas encore figé) : permettre à un utilisateur de **payer** pour **lire des chapitres** ou **débloquer un livre entier**, puis générer une **facture PDF**.
+Planned goal (not finalized yet): allow a user to **pay** to **read chapters** or **unlock a full book**, then generate a **PDF invoice**.
 
-Pistes d’implémentation backend :
+Backend implementation ideas:
 
-- **Modèle d’accès (entitlements)** :
-  - `BOOK_UNLOCK` (débloque tout un livre) et/ou `CHAPTER_UNLOCK` (débloque un chapitre).
-  - Stocker une “preuve d’accès” en base (ex: table `entitlements` liée à `userId`, `bookId/chapterId`, `grantedAt`, `sourcePaymentId`).
-- **Stripe Checkout (recommandé pour démarrer)** :
-  - Endpoint backend pour créer une session Checkout (ex: `POST /api/billing/checkout` avec `{ type, bookId?, chapterId? }`).
-  - Redirection front vers Stripe, puis retour front sur success/cancel.
-  - **Webhooks Stripe** (ex: `POST /api/billing/webhooks/stripe`) pour valider le paiement côté serveur et accorder l’accès.
-- **Sécurisation & robustesse** :
-  - Vérifier la signature webhook (`Stripe-Signature`) + secret de webhook.
-  - Idempotence (un event Stripe peut être reçu plusieurs fois) via stockage `stripeEventId`/`paymentIntentId`.
-  - Gérer les statuts (paiement échoué, refund, chargeback) → retrait d’accès si nécessaire.
-- **Gating des routes de lecture** :
-  - À ajouter au niveau service (ex: `ChapterService.get(...)` / `getHtml(...)`) : vérifier que l’utilisateur a un entitlement valide avant de retourner le contenu.
-  - Option “preview” : exposer un extrait public (si souhaité) tout en protégeant le reste.
-- **Facture PDF** :
-  - Générer une facture au moment de la confirmation webhook (ou à la demande) et la stocker (DB + fichier dans `app.upload.dir`).
-  - Réutiliser **PDFBox** (déjà présent) pour produire un PDF simple (numéro de facture, date, client, items, total, devise).
-  - Endpoint de récupération (ex: `GET /api/invoices/{id}/pdf` authentifié) avec contrôle d’accès (facture du user courant uniquement).
+- **Access model (entitlements)**:
+  - `BOOK_UNLOCK` (unlocks a whole book) and/or `CHAPTER_UNLOCK` (unlocks a chapter).
+  - Store a “proof of access” in the DB (e.g. `entitlements` table linked to `userId`, `bookId/chapterId`, `grantedAt`, `sourcePaymentId`).
+- **Stripe Checkout (recommended to start)**:
+  - Backend endpoint to create a Checkout session (e.g. `POST /api/billing/checkout` with `{ type, bookId?, chapterId? }`).
+  - Frontend redirects to Stripe, then returns on success/cancel.
+  - **Stripe webhooks** (e.g. `POST /api/billing/webhooks/stripe`) to validate payment server-side and grant access.
+- **Security & robustness**:
+  - Verify webhook signature (`Stripe-Signature`) + webhook secret.
+  - Idempotency (a Stripe event can be received multiple times) by storing `stripeEventId`/`paymentIntentId`.
+  - Handle statuses (failed payment, refund, chargeback) → revoke access if needed.
+- **Gating reading routes**:
+  - To add at the service layer (e.g. `ChapterService.get(...)` / `getHtml(...)`): verify the user has a valid entitlement before returning content.
+  - Optional “preview”: expose a public excerpt (if desired) while protecting the rest.
+- **PDF invoice**:
+  - Generate an invoice when the webhook is confirmed (or on-demand) and store it (DB + file in `app.upload.dir`).
+  - Reuse **PDFBox** (already present) to produce a simple PDF (invoice number, date, customer, items, total, currency).
+  - Retrieval endpoint (e.g. `GET /api/invoices/{id}/pdf` authenticated) with access control (only the current user's invoices).
 
-Configuration à prévoir (env) : `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `APP_FRONTEND_BASE_URL` (success/cancel URLs), et éventuellement `APP_PUBLIC_BASE_URL` si le backend est derrière un reverse proxy.
+Configuration to plan for (env): `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `APP_FRONTEND_BASE_URL` (success/cancel URLs), and optionally `APP_PUBLIC_BASE_URL` if the backend sits behind a reverse proxy.
 
 ### API / DX
 
-- **OpenAPI/Swagger** : exposer la doc des routes + modèles DTO (utile avec multipart + endpoints protégés).
-- **Pagination/tri** : pour `GET /articles`, `GET /chapters`, `GET /comments` afin d’éviter de charger des listes complètes.
-- **Versioning d’API** : `/api/v1/...` si l’API doit évoluer sans casser le front.
+- **OpenAPI/Swagger**: expose routes documentation + DTO models (useful with multipart + protected endpoints).
+- **Pagination/sorting**: for `GET /articles`, `GET /chapters`, `GET /comments` to avoid loading full lists.
+- **API versioning**: `/api/v1/...` if the API needs to evolve without breaking the frontend.
 
-### Qualité / Ops
+### Quality / Ops
 
-- **Tests** : augmenter la couverture (auth JWT, règles `@PreAuthorize`, uploads multipart, conversion PDF→HTML, listeners email) + tests d’intégration sur H2/Testcontainers.
+- **Tests**: increase coverage (JWT auth, `@PreAuthorize` rules, multipart uploads, PDF→HTML conversion, email listeners) + integration tests with H2/Testcontainers.
