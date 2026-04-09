@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import jakarta.mail.internet.MimeMessage;
 
 @TestConfiguration
-public class NoopMailTestConfig {
+public class MailTestConfig {
 
     @Bean
     JavaMailSender javaMailSender() {

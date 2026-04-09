@@ -14,5 +14,6 @@ public record ChapterResponse(
     BookSummaryResponse book,
     LocalDateTime createdAt,
     List<CommentResponse> comments,
-    Integer like
+    Integer like,
+    String pdfUrl
 ) {}

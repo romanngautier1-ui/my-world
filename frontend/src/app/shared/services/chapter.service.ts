@@ -38,13 +38,6 @@ export class ChapterService {
     );
   }
 
-  getChapterHtmlById(chapterId: number): HttpResourceRef<{ html: string }> {
-    return httpResource<{ html: string }>(
-      () => ({ url: this.#apiUrl + '/' + chapterId + '/html' }),
-      { defaultValue: { html: '' } }
-    );
-  }
-
   getChapterPdfById(chapterId: number): Observable<Blob> {
     const url = this.#apiUrl + '/' + chapterId + '/pdf';
     return this.#http.get(url, { responseType: 'blob' });

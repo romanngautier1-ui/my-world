@@ -23,16 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.app.myworld.dto.chapterdto.ChapterCreateRequest;
-import com.app.myworld.dto.chapterdto.ChapterHtmlResponse;
 import com.app.myworld.dto.chapterdto.ChapterListResponse;
 import com.app.myworld.dto.chapterdto.ChapterResponse;
 import com.app.myworld.dto.chapterdto.ChapterUpdateRequest;
 import com.app.myworld.event.AddChapterEvent;
 import com.app.myworld.service.ChapterService;
-import com.app.myworld.service.PdfToHtmlService;
 import com.app.myworld.service.UploadService;
 
 import jakarta.validation.Valid;
@@ -47,7 +44,6 @@ public class ChapterController {
     private final ChapterService chapterService;
     private final ApplicationEventPublisher eventPublisher;
     private final UploadService uploadService;
-    private final PdfToHtmlService chapterContentHtmlService;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -68,36 +64,23 @@ public class ChapterController {
         }
     }
 
-    @GetMapping("/{id}/html")
-    public ResponseEntity<ChapterHtmlResponse> getHtml(@PathVariable Long id) {
-        try {
-            ChapterResponse chapter = chapterService.get(id);
-            String html = chapterContentHtmlService.toHtml(chapter.content());
-            return ResponseEntity.ok(new ChapterHtmlResponse(html));
-        } catch (IllegalArgumentException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage(), ex);
-        } catch (IllegalStateException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
-        }
-    }
-
     @GetMapping("/{id}/pdf")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Resource> getPdf(@PathVariable Long id) {
         try {
             ChapterResponse chapter = chapterService.get(id);
-            String content = chapter.content();
+            String url = chapter.pdfUrl();
             String uploadsSegment = "/api/uploads/";
-            if (content == null) {
+            if (url == null) {
                 throw new IllegalArgumentException("No uploaded PDF associated with chapter");
             }
 
-            int idx = content.indexOf(uploadsSegment);
+            int idx = url.indexOf(uploadsSegment);
             if (idx < 0) {
                 throw new IllegalArgumentException("No uploaded PDF associated with chapter");
             }
 
-            String after = content.substring(idx + uploadsSegment.length());
+            String after = url.substring(idx + uploadsSegment.length());
             int slash = after.indexOf('/');
             String filename = (slash >= 0 ? after.substring(0, slash) : after).strip();
             if (filename.isEmpty()
@@ -125,28 +108,7 @@ public class ChapterController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ChapterResponse> create(@Valid @ModelAttribute ChapterCreateRequest request) {
         try {
-            String contentToSave;
-            if (request.pdfFile() != null && !request.pdfFile().isEmpty()) {
-                String storedFilename = uploadService.savePdf(request.pdfFile());
-                contentToSave = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/api/uploads/")
-                        .path(storedFilename)
-                        .toUriString();
-            } else if (request.content() != null && !request.content().isBlank()) {
-                contentToSave = request.content().trim();
-            } else {
-                throw new IllegalArgumentException("Either pdfFile or content is required");
-            }
-
-            ChapterCreateRequest requestToSave = new ChapterCreateRequest(
-                    request.title(),
-                    request.number(),
-                    contentToSave,
-                    request.bookId(),
-                    request.pdfFile()
-            );
-
-            ChapterResponse created = chapterService.create(requestToSave);
+            ChapterResponse created = chapterService.create(request);
              // Publish an event when a new chapter is added
              eventPublisher.publishEvent(new AddChapterEvent(created.id(), created.title()));
              return ResponseEntity.created(URI.create("/api/chapters/" + created.id())).body(created);
@@ -159,23 +121,14 @@ public class ChapterController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ChapterResponse> update(@PathVariable Long id, @Valid @ModelAttribute ChapterUpdateRequest request) {
         try {
-            ChapterUpdateRequest requestToSave = request;
-            if (request.pdfFile() != null && !request.pdfFile().isEmpty()) {
-                String storedFilename = uploadService.savePdf(request.pdfFile());
-                String pdfUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                        .path("/api/uploads/")
-                        .path(storedFilename)
-                        .toUriString();
-                requestToSave = new ChapterUpdateRequest(
-                        request.title(),
-                        request.number(),
-                        pdfUrl,
-                        request.bookId(),
-                        request.pdfFile()
-                );
+            if (request.title() == null
+                    && request.number() == null
+                    && request.content() == null
+                    && request.bookId() == null
+                    && request.pdfFile() == null) {
+                throw new IllegalArgumentException("No fields to update");
             }
-
-            return ResponseEntity.ok(chapterService.update(id, requestToSave));
+            return ResponseEntity.ok(chapterService.update(id, request));
         } catch (IllegalArgumentException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
         }

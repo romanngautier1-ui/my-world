@@ -21,7 +21,7 @@ import com.app.myworld.repository.UserRepository;
 import com.app.myworld.security.JwtService;
 
 @SpringBootTest
-@Import(NoopMailTestConfig.class)
+@Import(MailTestConfig.class)
 class MailSecurityIntegrationTest {
 
     private MockMvc mockMvc;

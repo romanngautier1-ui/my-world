@@ -32,7 +32,6 @@ export class ChapterProfileComponent {
   readonly isAdmin = this.#auth.isAdmin();
 
   chapter = this.#chapitreService.getChapterById(this.#chapterId);
-  chapterHtml = this.#chapitreService.getChapterHtmlById(this.#chapterId);
   isChapterRead = this.#chapterReadService.getChapterReadByUserIdAndChapterId(this.userId, this.#chapterId);
   isCommentWritten = this.#commentService.getCommentByUserIdAndChapterId(this.userId, this.#chapterId);
   chapterNeighbors = this.#chapitreService.getChapterNeighbors(this.#chapterId);
@@ -42,7 +41,6 @@ export class ChapterProfileComponent {
       const id = Number(params.get('chapterId'));
       this.#chapterId = id;
       this.chapter = runInInjectionContext(this.#inj, () => this.#chapitreService.getChapterById(id));
-      this.chapterHtml = runInInjectionContext(this.#inj, () => this.#chapitreService.getChapterHtmlById(id));
       this.isChapterRead = runInInjectionContext(this.#inj, () => this.#chapterReadService.getChapterReadByUserIdAndChapterId(this.userId, id));
       this.isCommentWritten = runInInjectionContext(this.#inj, () => this.#commentService.getCommentByUserIdAndChapterId(this.userId, id));
       this.chapterNeighbors = runInInjectionContext(this.#inj, () => this.#chapitreService.getChapterNeighbors(id));

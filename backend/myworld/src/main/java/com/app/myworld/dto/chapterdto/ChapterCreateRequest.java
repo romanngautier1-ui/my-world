@@ -17,7 +17,6 @@ public record ChapterCreateRequest(
     @Positive(message = "Le numéro du chapitre doit être positif")
     Integer number,
 
-    // @NotBlank(message = "Le contenu est obligatoire")
     String content,
 
     @NotNull(message = "L'identifiant du book est obligatoire")

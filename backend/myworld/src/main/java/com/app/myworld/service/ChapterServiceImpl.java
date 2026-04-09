@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.app.myworld.dto.chapterdto.ChapterCreateRequest;
 import com.app.myworld.dto.chapterdto.ChapterListResponse;
@@ -22,6 +23,8 @@ public class ChapterServiceImpl implements ChapterService {
     
         private final ChapterRepository chapterRepository;
         private final ChapterMapper chapterMapper;
+        private final UploadService uploadService;
+        private final PdfToHtmlService chapterContentHtmlService;
 
         @Override
         public List<ChapterListResponse> list() {
@@ -38,7 +41,33 @@ public class ChapterServiceImpl implements ChapterService {
         @Override
         @Transactional
         public ChapterResponse create(ChapterCreateRequest request) {
-            Chapter chapter = chapterMapper.toEntity(request);
+            String urlToSave = null;
+            String content = null;
+            if (request.pdfFile() != null && !request.pdfFile().isEmpty()) {
+                String storedFilename = uploadService.savePdf(request.pdfFile());
+                urlToSave = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/api/uploads/")
+                        .path(storedFilename)
+                        .toUriString();
+                content = chapterContentHtmlService.toHtml(urlToSave);
+            } else if (request.content() != null && !request.content().isBlank()) {
+                content = request.content().trim();
+            } else {
+                throw new IllegalArgumentException("Either pdfFile or content is required");
+            }
+
+            ChapterCreateRequest requestToSave = new ChapterCreateRequest(
+                    request.title(),
+                    request.number(),
+                    content,
+                    request.bookId(),
+                    request.pdfFile()
+            );
+
+            Chapter chapter = chapterMapper.toEntity(requestToSave);
+            if (urlToSave != null) {
+                chapter.setPdfUrl(urlToSave);
+            }
             chapter = chapterRepository.save(chapter);
             return chapterMapper.toResponse(chapter);
         }
@@ -46,17 +75,34 @@ public class ChapterServiceImpl implements ChapterService {
         @Override
         @Transactional
         public ChapterResponse update(Long id, ChapterUpdateRequest request) {
+
+            String urlToSave = null;
+            String content = request.content();
+
+            if (request.pdfFile() != null && !request.pdfFile().isEmpty()) {
+                String storedFilename = uploadService.savePdf(request.pdfFile());
+                urlToSave = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/api/uploads/")
+                        .path(storedFilename)
+                        .toUriString();
+                content = chapterContentHtmlService.toHtml(urlToSave); 
+            }
+
+            ChapterUpdateRequest requestToSave = new ChapterUpdateRequest(
+                        request.title(),
+                        request.number(),
+                        content,
+                        request.bookId(),
+                        request.pdfFile()
+                );
+
             Chapter chapter = chapterRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Chapter not found: " + id));
 
-            if (request.title() == null
-                    && request.number() == null
-                    && request.content() == null
-                    && request.bookId() == null) {
-                throw new IllegalArgumentException("No fields to update");
+            chapterMapper.updateEntityFromRequest(requestToSave, chapter);
+            if (urlToSave != null) {
+                chapter.setPdfUrl(urlToSave);
             }
-
-            chapterMapper.updateEntityFromRequest(request, chapter);
             return chapterMapper.toResponse(chapter);
         }
 

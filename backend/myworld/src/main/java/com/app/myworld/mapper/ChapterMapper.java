@@ -31,6 +31,7 @@ public interface ChapterMapper {
     @Mapping(target="comments", ignore=true)
     @Mapping(target="reads", ignore=true)
     @Mapping(target="book.id", source="bookId")
+    @Mapping(target="pdfUrl", ignore=true)
     Chapter toEntity(ChapterCreateRequest request);
 
     @Mapping(target="id", ignore=true)
@@ -39,5 +40,6 @@ public interface ChapterMapper {
     @Mapping(target="comments", ignore=true)
     @Mapping(target="reads", ignore=true)
     @Mapping(target="book.id", source="bookId")
+    @Mapping(target="pdfUrl", ignore=true)
     void updateEntityFromRequest(ChapterUpdateRequest request, @MappingTarget Chapter chapter);
 }

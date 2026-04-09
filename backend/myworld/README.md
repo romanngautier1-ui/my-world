@@ -13,7 +13,7 @@ MyWorld is a REST API that powers a reading/writing application with:
 - **User accounts**: registration, **email verification**, **JWT** login, password reset.
 - **Email notifications**: automatic emails when a new article/chapter is added (active users).
 - **Uploads**: file storage (images + PDFs) on disk, served via `GET /api/uploads/{filename}`.
-- **PDF service**: a chapter can be stored either as **raw text** or as a **URL to an uploaded PDF**; the backend can **extract text from the PDF** and render it as HTML.
+- **PDF service (chapters)**: when a chapter is created/updated with a `pdfFile`, the backend uploads the PDF, stores its public URL in `pdfUrl`, and **pre-computes HTML** (PDFBox text extraction + paragraph formatting) into `content`.
 
 ## Stack
 
@@ -142,17 +142,22 @@ Use cases:
 
 - Articles/books: `imageFile` (upload) **or** `urlImage` (external URL)
 - Chapters: `pdfFile` (upload) **or** `content` (raw text)
+  - If `pdfFile` is provided, the backend also returns `pdfUrl` in `ChapterResponse` and stores pre-computed HTML in `content`.
 
 ### PDF service (chapters)
 
-A chapter can store its content either as a URL to an uploaded PDF (`.../api/uploads/<uuid>.pdf`) or as raw text.
+A chapter can be created/updated with either:
 
-- `GET /api/chapters/{id}/html` (authenticated)
-  - Returns “safe” HTML in `<p>`:
-    - if `content` points to an uploaded PDF, the backend extracts text using **PDFBox** and then formats it into paragraphs
-    - otherwise, it formats the raw text into paragraphs
+- `content` (raw text), or
+- `pdfFile` (uploaded PDF) — in that case the backend pre-computes HTML into `content` and stores the public PDF URL in `pdfUrl`.
+
+The `GET /api/chapters/{id}` route returns a `ChapterResponse` that includes:
+
+- `content`: raw text (if created from text) **or** pre-computed HTML (if created from a PDF)
+- `pdfUrl`: `null` for text chapters, otherwise a URL like `http://<host>/api/uploads/<uuid>.pdf`
+
 - `GET /api/chapters/{id}/pdf` (ADMIN)
-  - Downloads the PDF linked to the chapter if the content is a PDF upload.
+  - Downloads the uploaded PDF linked to the chapter (based on `pdfUrl`).
 
 ### Articles
 
@@ -175,7 +180,6 @@ A chapter can store its content either as a URL to an uploaded PDF (`.../api/upl
 
 - `GET /api/chapters`
 - `GET /api/chapters/{id}`
-- `GET /api/chapters/{id}/html`
 - `GET /api/chapters/{id}/pdf` (ADMIN)
 - `GET /api/chapters/{id}/neighbors`
 - `POST /api/chapters/{id}/likes/increment`
