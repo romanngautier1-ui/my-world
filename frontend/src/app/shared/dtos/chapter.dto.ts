@@ -6,6 +6,7 @@ export interface ChapterDto {
   title: string;
   number: number;
   content: string;
+  pdfUrl?: string | null;
   book: BookSummaryDto;
   createdAt: Date;
   comments: CommentDto[];

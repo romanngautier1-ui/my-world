@@ -25,6 +25,7 @@ export class ChapterService {
           title: '',
           number: 1,
           content: '',
+          pdfUrl: null,
           book: {
             id: 0,
             title: '',

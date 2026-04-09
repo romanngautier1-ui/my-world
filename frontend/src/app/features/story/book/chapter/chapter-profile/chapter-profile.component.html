@@ -26,7 +26,11 @@
         <div id="chapterReading" class="container py-4" style="max-width: 900px;">
             <h1 class="text-center">{{ chapter.value().title }}</h1>
             <p class="text-center">#{{ chapter.value().number }} — {{ chapter.value().createdAt | date }}</p> 
-            <div class="text-justify user-select-none" [innerHTML]="chapter.value().content"></div>
+            @if(chapter.value().pdfUrl) {
+                <div class="text-justify user-select-none" [innerHTML]="chapter.value().content"></div>
+            } @else {
+                <div class="text-justify user-select-none">{{ chapter.value().content }}</div>
+            }
         </div>
 
         <nav class="navbar bg-dark border-bottom border-body py-2 chapter-navbar chapter-navbar--compact" data-bs-theme="dark">
