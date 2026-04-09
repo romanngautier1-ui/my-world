@@ -1,18 +1,12 @@
-package com.app.myworld.model;
+package com.app.myworld.dto.contactdto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class EmailDetails {
+public class ContactRequest {
 
     @NotBlank(message = "Recipient email is required")
     @Email(message = "Invalid email format")
@@ -26,6 +20,4 @@ public class EmailDetails {
     @NotBlank(message = "Message body is required")
     @Size(max = 5000, message = "Message must be less than 5000 characters")
     private String message;
-
-    private String attachment;
 }

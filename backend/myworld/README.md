@@ -89,7 +89,7 @@ Tests use an in-memory H2 database via `src/test/resources/application.propertie
 The routes below are derived from the Spring controllers (`src/main/java/com/app/myworld/controller`).
 By default, Spring Security runs in **stateless** mode (JWT):
 
-- **Public**: auth endpoints (`/api/auth/**`), `GET /api/uploads/**`, `GET /api/books` / `GET /api/books/{id}`, `GET /api/articles` / `GET /api/articles/{id}` / `GET /api/articles/{id}/neighbors`, mail endpoints (`/api/mails/**`).
+- **Public**: auth endpoints for **register/login/verify/reset** (`/api/auth/register`, `/api/auth/login`, `/api/auth/verify-email`, `/api/auth/reset-password`, `/api/auth/reset-password-link`), `GET /api/uploads/**`, `GET /api/books` / `GET /api/books/{id}`, `GET /api/articles` / `GET /api/articles/{id}` / `GET /api/articles/{id}/neighbors`, and `POST /api/mails/receive`.
 - **Authenticated**: everything else.
 - **ADMIN**: some routes are restricted via `@PreAuthorize("hasRole('ADMIN')")`.
 
@@ -108,6 +108,8 @@ By default, Spring Security runs in **stateless** mode (JWT):
   - Effect: if the user exists, generates a reset token (30 min) and sends a link to the frontend.
 - `POST /api/auth/reset-password-link` (public)
   - JSON body (`ResetPasswordRequest`): `token`, `newPassword`
+- `POST /api/auth/logout` (authenticated)
+  - Effect: increments `User.tokenVersion` to invalidate the current JWT server-side (old tokens become unusable).
 
 Token usage:
 
@@ -207,11 +209,14 @@ A chapter can store its content either as a URL to an uploaded PDF (`.../api/upl
 
 ### Mails
 
-Endpoints currently **public** (see `SecurityConfig`):
+Access rules:
 
-- `POST /api/mails/send`
-- `POST /api/mails/sendWithAttachment`
-- `POST /api/mails/receive`
+- `POST /api/mails/receive` (public)
+  - Use case: “contact form”. The backend sends the message to the configured mailbox (`spring.mail.username`) and sets the user email as `Reply-To`.
+  - JSON body (`ContactRequest`): `recipient` (user email), `subject`, `message`
+- `POST /api/mails/send` (ADMIN)
+- `POST /api/mails/sendWithAttachment` (ADMIN)
+  - Note: attachments are restricted for safety; avoid exposing arbitrary server file paths.
 
 ### Uploads
 
@@ -245,9 +250,9 @@ These ideas are intentionally incremental and reuse patterns already present (se
 
 ### Security / Auth
 
-- **Logout endpoint**: increment `User.tokenVersion` to invalidate the current JWT server-side (the mechanism already exists via `generateNewToken`).
+- **Logout endpoint**: implemented via `POST /api/auth/logout` (increments `User.tokenVersion`).
 - **Refresh tokens** (optional): short-lived access token + refresh token (rotation + revocation) instead of a long-lived JWT.
-- **Secure /api/mails/**: mail endpoints are currently public (see `SecurityConfig`) → add auth + rate limiting + anti-abuse measures.
+- **Secure /api/mails/**: `send*` are now ADMIN-only; consider rate limiting + anti-abuse for `POST /api/mails/receive`.
 - **Consistent input validation**: standardize errors (single JSON format) via `@ControllerAdvice` (there is already a `GlobalExceptionHandler`).
 
 ### Uploads / Files

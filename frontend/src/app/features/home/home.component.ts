@@ -26,10 +26,6 @@ export class HomeComponent {
 
   }
 
-  logout() {
-    this.authService.logout();
-  }
-
   isAuthenticated(): boolean{
     return this.authService.isAuthenticated();
   }

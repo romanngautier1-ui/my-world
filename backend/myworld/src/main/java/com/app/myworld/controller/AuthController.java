@@ -2,6 +2,8 @@ package com.app.myworld.controller;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,12 +73,18 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password-link")
-    public ResponseEntity<String> updatePassword(@RequestBody ResetPasswordRequest request) {
+    public ResponseEntity<String> updatePassword(@Validated @RequestBody ResetPasswordRequest request) {
         String result = authService.updatePassword(request.token(), request.newPassword());
         if ("success".equals(result)) {
             return ResponseEntity.ok("Password updated successfully. You can now log in with your new password.");
         } else {
             return ResponseEntity.badRequest().body("Invalid or expired password reset token.");
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal UserDetails user) {
+        authService.logout(user.getUsername());
+        return ResponseEntity.noContent().build();
     }
 }

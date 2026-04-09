@@ -167,4 +167,20 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail()).role(user.getRole())
                 .build();
     }
+
+    @Override
+    public void logout(String username) {
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("Username is required");
+        }
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+        
+        Integer current = user.getTokenVersion();
+        if (current == null) {
+            current = 0;
+        }
+        user.setTokenVersion(current + 1);
+        userRepository.save(user);
+    }
 }

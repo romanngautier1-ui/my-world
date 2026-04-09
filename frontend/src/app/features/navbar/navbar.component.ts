@@ -11,10 +11,6 @@ import { AuthService } from '../../core/auth/auth.service';
 export class NavbarComponent {
   readonly authService = inject(AuthService);
 
-  logout() {
-    this.authService.logout();
-  }
-
   isAuthenticated(): boolean{
     return this.authService.isAuthenticated();
   }

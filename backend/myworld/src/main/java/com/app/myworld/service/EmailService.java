@@ -1,5 +1,6 @@
 package com.app.myworld.service;
 
+import com.app.myworld.dto.contactdto.ContactRequest;
 import com.app.myworld.model.EmailDetails;
 
 public interface EmailService {
@@ -8,5 +9,5 @@ public interface EmailService {
 
     String sendEmailWithAttachment(EmailDetails details);
 
-    String receiveEmail(EmailDetails details);
+    String receiveEmail(ContactRequest details);
 }

@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.app.myworld.dto.contactdto.ContactRequest;
 import com.app.myworld.model.EmailDetails;
 
 import jakarta.mail.internet.MimeMessage;
@@ -51,6 +52,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(details.getSubject());
             helper.setText(details.getMessage());
 
+            safeAttachmentPath(details.getAttachment());
             FileSystemResource file = new FileSystemResource(details.getAttachment());
             helper.addAttachment(file.getFilename(), file);
 
@@ -64,19 +66,39 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public String receiveEmail(EmailDetails details) {
+    public String receiveEmail(ContactRequest request) {
         try {
+            String recipient = rejectCrlf(request.getRecipient());
+            String subject = rejectCrlf(request.getSubject());
+            String message = rejectCrlf(request.getMessage());
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setFrom(sender);
             mailMessage.setTo(sender);
-            mailMessage.setReplyTo(details.getRecipient());
-            mailMessage.setText(details.getMessage());
-            mailMessage.setSubject(details.getSubject());
+            mailMessage.setReplyTo(recipient);
+            mailMessage.setText(message);
+            mailMessage.setSubject(subject);
             javaMailSender.send(mailMessage);
             return "Email sent successfully";
 
         } catch (Exception e) {
             return "Error while sending email: " + e.getMessage();
+        }
+    }
+
+    public static String rejectCrlf(String s) {
+        if (s == null) return null;
+        if (s.indexOf('\r') >= 0 || s.indexOf('\n') >= 0) {
+            throw new IllegalArgumentException("Email contains CR/LF characters");
+        }
+        return s;
+    }
+
+    public static void safeAttachmentPath(String path) {
+        if (path == null || path.isEmpty()) {
+            throw new IllegalArgumentException("Attachment path cannot be null or empty");
+        }
+        if (path.contains("..") || path.contains("/") || path.contains("\\")) {
+            throw new IllegalArgumentException("Invalid attachment path");
         }
     }
 }

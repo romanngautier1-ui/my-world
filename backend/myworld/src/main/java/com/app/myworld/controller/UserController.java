@@ -63,7 +63,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
         }
     }
-    
+
 
     @DeleteMapping("/me")
     @PreAuthorize("hasRole('ADMIN')")

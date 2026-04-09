@@ -18,4 +18,6 @@ public interface AuthService {
     String updatePassword(String token, String newPassword);
 
     AuthResponse generateNewToken(Long userId);
+
+    void logout(String username);
 }

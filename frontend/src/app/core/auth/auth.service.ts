@@ -73,9 +73,15 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    this._isAuthenticated.set(false);
-    this.router.navigate(['/login']);
+    return this.http.post(`${this.API_URL}/logout`, {}, {
+      responseType: 'text',
+    }).pipe(
+      tap(() => {
+        localStorage.removeItem('token');
+        this._isAuthenticated.set(false);
+        this.router.navigate(['/login']);
+      })
+    );
   }
 
   setToken(token: string) {

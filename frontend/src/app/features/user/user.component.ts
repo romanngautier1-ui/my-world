@@ -43,6 +43,6 @@ export class UserComponent {
   }
 
   logout() {
-    this.#authService.logout();
+    this.#authService.logout().subscribe();
   }
 }
