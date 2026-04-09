@@ -10,4 +10,6 @@ public interface UploadService {
     String savePdf(MultipartFile file);
 
     Resource loadAsResource(String filename);
+
+    void delete(String filename);
 }

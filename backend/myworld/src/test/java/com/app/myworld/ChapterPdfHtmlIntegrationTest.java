@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.startsWith;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -88,7 +89,7 @@ class ChapterPdfHtmlIntegrationTest {
                 createPdfBytes("Hello PDF")
         );
 
-        mockMvc.perform(multipart("/api/chapters")
+        MvcResult result = mockMvc.perform(multipart("/api/chapters")
                         .file(pdf)
                         .param("title", "Chapitre 1")
                         .param("number", "1")
@@ -103,7 +104,13 @@ class ChapterPdfHtmlIntegrationTest {
                 .andExpect(jsonPath("$.content", allOf(
                         containsString("<p>"),
                         containsString("Hello PDF")
-                )));
+            )))
+            .andReturn();
+
+        String responseBody = result.getResponse().getContentAsString();
+        String pdfUrl = JsonPath.parse(responseBody).read("$.pdfUrl", String.class);
+        Path uploadFile = uploadPathFromPdfUrl(pdfUrl);
+        assertThat(Files.exists(uploadFile)).isTrue();
     }
 
     @Test
@@ -111,12 +118,27 @@ class ChapterPdfHtmlIntegrationTest {
         Book book = bookRepository.saveAndFlush(createBook());
         String jwt = jwtService.generateToken(createUser(Role.ADMIN, "admin-patch"));
 
-        Chapter initial = new Chapter();
-        initial.setTitle("Chapitre initial");
-        initial.setNumber(1);
-        initial.setContent("Texte initial");
-        initial.setBook(book);
-        initial = chapterRepository.saveAndFlush(initial);
+        MockMultipartFile firstPdf = new MockMultipartFile(
+            "pdfFile",
+            "first.pdf",
+            "application/pdf",
+            createPdfBytes("First PDF")
+        );
+
+        MvcResult createResult = mockMvc.perform(multipart("/api/chapters")
+                .file(firstPdf)
+                .param("title", "Chapitre initial")
+                .param("number", "1")
+                .param("bookId", String.valueOf(book.getId()))
+                .header("Authorization", "Bearer " + jwt))
+            .andExpect(status().isCreated())
+            .andReturn();
+
+        String createBody = createResult.getResponse().getContentAsString();
+        long chapterId = JsonPath.parse(createBody).read("$.id", Number.class).longValue();
+        String firstPdfUrl = JsonPath.parse(createBody).read("$.pdfUrl", String.class);
+        Path firstUpload = uploadPathFromPdfUrl(firstPdfUrl);
+        assertThat(Files.exists(firstUpload)).isTrue();
 
         MockMultipartFile pdf = new MockMultipartFile(
                 "pdfFile",
@@ -125,14 +147,14 @@ class ChapterPdfHtmlIntegrationTest {
                 createPdfBytes("Updated PDF")
         );
 
-        MockMultipartHttpServletRequestBuilder patch = multipart("/api/chapters/{id}", initial.getId())
+        MockMultipartHttpServletRequestBuilder patch = multipart("/api/chapters/{id}", chapterId)
                 .file(pdf)
                 .with(req -> {
                     req.setMethod("PATCH");
                     return req;
                 });
 
-        mockMvc.perform(patch.header("Authorization", "Bearer " + jwt))
+        MvcResult patchResult = mockMvc.perform(patch.header("Authorization", "Bearer " + jwt))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pdfUrl", allOf(
                         startsWith("http://localhost/api/uploads/"),
@@ -141,8 +163,50 @@ class ChapterPdfHtmlIntegrationTest {
                 .andExpect(jsonPath("$.content", allOf(
                         containsString("<p>"),
                         containsString("Updated PDF")
-                )));
+            )))
+            .andReturn();
+
+        String patchBody = patchResult.getResponse().getContentAsString();
+        String updatedPdfUrl = JsonPath.parse(patchBody).read("$.pdfUrl", String.class);
+        Path updatedUpload = uploadPathFromPdfUrl(updatedPdfUrl);
+
+        assertThat(Files.exists(updatedUpload)).isTrue();
+        assertThat(Files.exists(firstUpload)).isFalse();
     }
+
+        @Test
+        void deleteRemovesStoredPdfFile() throws Exception {
+        Book book = bookRepository.saveAndFlush(createBook());
+        String jwt = jwtService.generateToken(createUser(Role.ADMIN, "admin-delete"));
+
+        MockMultipartFile pdf = new MockMultipartFile(
+            "pdfFile",
+            "todelete.pdf",
+            "application/pdf",
+            createPdfBytes("To delete")
+        );
+
+        MvcResult createResult = mockMvc.perform(multipart("/api/chapters")
+                .file(pdf)
+                .param("title", "Chapitre")
+                .param("number", "1")
+                .param("bookId", String.valueOf(book.getId()))
+                .header("Authorization", "Bearer " + jwt))
+            .andExpect(status().isCreated())
+            .andReturn();
+
+        String body = createResult.getResponse().getContentAsString();
+        long chapterId = JsonPath.parse(body).read("$.id", Number.class).longValue();
+        String pdfUrl = JsonPath.parse(body).read("$.pdfUrl", String.class);
+        Path uploadFile = uploadPathFromPdfUrl(pdfUrl);
+        assertThat(Files.exists(uploadFile)).isTrue();
+
+        mockMvc.perform(delete("/api/chapters/{id}", chapterId)
+                .header("Authorization", "Bearer " + jwt))
+            .andExpect(status().isNoContent());
+
+        assertThat(Files.exists(uploadFile)).isFalse();
+        }
 
     @Test
     void pdfDownloadReturnsStoredPdfBytes() throws Exception {
@@ -219,6 +283,24 @@ class ChapterPdfHtmlIntegrationTest {
                 }
             });
         }
+    }
+
+    private Path uploadPathFromPdfUrl(String pdfUrl) {
+        if (pdfUrl == null) {
+            throw new IllegalArgumentException("pdfUrl is null");
+        }
+        String uploadsSegment = "/api/uploads/";
+        int idx = pdfUrl.indexOf(uploadsSegment);
+        if (idx < 0) {
+            throw new IllegalArgumentException("pdfUrl does not contain uploads segment");
+        }
+        String after = pdfUrl.substring(idx + uploadsSegment.length());
+        int slash = after.indexOf('/');
+        String filename = (slash >= 0 ? after.substring(0, slash) : after).strip();
+        if (filename.isEmpty()) {
+            throw new IllegalArgumentException("empty upload filename");
+        }
+        return Path.of(uploadDir).toAbsolutePath().normalize().resolve(filename).normalize();
     }
 
     private static byte[] createPdfBytes(String text) {

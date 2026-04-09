@@ -99,6 +99,13 @@ public class ChapterServiceImpl implements ChapterService {
             Chapter chapter = chapterRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Chapter not found: " + id));
 
+            if (chapter.getPdfUrl() != null && urlToSave != null) {
+                String filename = chapterContentHtmlService.extractUploadFilenameFromContent(chapter.getPdfUrl());
+                if (filename != null) {
+                    uploadService.delete(filename);
+                }
+            }
+
             chapterMapper.updateEntityFromRequest(requestToSave, chapter);
             if (urlToSave != null) {
                 chapter.setPdfUrl(urlToSave);
@@ -141,6 +148,12 @@ public class ChapterServiceImpl implements ChapterService {
         public void delete(Long id) {
             Chapter chapter = chapterRepository.findById(id)
                     .orElseThrow(() -> new IllegalArgumentException("Chapter not found: " + id));
+            if (chapter.getPdfUrl() != null) {
+                String filename = chapterContentHtmlService.extractUploadFilenameFromContent(chapter.getPdfUrl());
+                if (filename != null) {
+                    uploadService.delete(filename);
+                }
+            }
             chapterRepository.delete(chapter);
         }
 }

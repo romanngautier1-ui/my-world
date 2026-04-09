@@ -34,6 +34,19 @@ public class UploadServiceImpl implements UploadService {
         return save(file, AllowedKind.PDF);
     }
 
+    @Override
+    public void delete(String filename) {
+        Path uploadRoot = Paths.get(uploadDir).toAbsolutePath().normalize();
+        Path file = uploadRoot.resolve(filename).normalize();
+        if (file.startsWith(uploadRoot) && Files.exists(file) && Files.isRegularFile(file)) {
+            try {
+                Files.delete(file);
+            } catch (IOException ex) {
+                // Log the error and continue
+            }
+        }
+    }
+
     private String save(MultipartFile file, AllowedKind kind) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File is required");
