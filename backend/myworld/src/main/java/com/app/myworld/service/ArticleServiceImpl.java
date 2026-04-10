@@ -22,6 +22,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
+    private final UploadService uploadService;
+    private final PdfToHtmlService chapterContentHtmlService;
 
     @Override
     public List<ArticleListResponse> list() {
@@ -52,7 +54,13 @@ public class ArticleServiceImpl implements ArticleService {
         if (request.title() == null && request.content() == null && request.urlImage() == null) {
             throw new IllegalArgumentException("No fields to update");
         }
-
+        if (request.urlImage() != null && !request.urlImage().equals(article.getUrlImage())) {
+                String filename = chapterContentHtmlService.extractUploadFilenameFromContent(article.getUrlImage());
+                if (filename != null) {
+                    uploadService.delete(filename);
+                }
+            article.setUrlImage(request.urlImage());
+        }
         articleMapper.updateEntityFromRequest(request, article);
         return articleMapper.toResponse(article);
     }
@@ -72,6 +80,12 @@ public class ArticleServiceImpl implements ArticleService {
     public void delete(Long id) {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Article not found: " + id));
+        if (article.getUrlImage() != null) {
+            String filename = chapterContentHtmlService.extractUploadFilenameFromContent(article.getUrlImage());
+            if (filename != null) {
+                uploadService.delete(filename);
+            }
+        }
         articleRepository.delete(article);
     }
 }

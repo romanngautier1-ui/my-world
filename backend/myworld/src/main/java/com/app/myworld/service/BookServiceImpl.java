@@ -22,6 +22,8 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final UploadService uploadService;
+    private final PdfToHtmlService chapterContentHtmlService;
 
     @Override
     public List<BookListResponse> list() {
@@ -52,7 +54,13 @@ public class BookServiceImpl implements BookService {
         if (request.title() == null && request.number() == null) {
             throw new IllegalArgumentException("No fields to update");
         }
-
+        if (request.urlImage() != null && !request.urlImage().equals(book.getUrlImage())) {
+                String filename = chapterContentHtmlService.extractUploadFilenameFromContent(book.getUrlImage());
+                if (filename != null) {
+                    uploadService.delete(filename);
+                }
+            book.setUrlImage(request.urlImage());
+        }
         bookMapper.updateEntityFromRequest(request, book);
         return bookMapper.toResponse(book);
     }
@@ -60,9 +68,14 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (!bookRepository.existsById(id)) {
-            throw new IllegalArgumentException("Book not found: " + id);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Book not found: " + id));
+        if (book.getUrlImage() != null) {
+            String filename = chapterContentHtmlService.extractUploadFilenameFromContent(book.getUrlImage());
+            if (filename != null) {
+                uploadService.delete(filename);
+            }
         }
-        bookRepository.deleteById(id);
+        bookRepository.delete(book);
     }
 }
