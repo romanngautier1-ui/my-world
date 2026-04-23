@@ -17,7 +17,7 @@ MyWorld is a fullstack web application (Spring Boot REST API + Angular frontend)
 
 <p>
     <img src="https://s3.amazonaws.com/angularminds.com/new-blog-images/angular-wordmark-gradient.png" alt="Angular" height="38" />
-    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fe4developer.com%2Fwp-content%2Fuploads%2F2018%2F01%2Fspring-boot.png&f=1&nofb=1&ipt=f7cbde277c9caa6a16c3c0518c786904cb7d30a4cb6b52bf0e8cbbf77aac342d" alt="Spring Boot" height="38" />
+    <img src=https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftrellat.es%2Fwp-content%2Fuploads%2Fspring-boot-logo.png&f=1&nofb=1&ipt=5b4200e95a784fc6d78e5dd4dce5232131d482e269b73954252c5f382b263f89 alt="Spring Boot" height="38" />
     <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmiro.medium.com%2Fv2%2Fresize%3Afit%3A797%2F1*8X26HYxkQ1YPkrW2oliKpw.png&f=1&nofb=1&ipt=3ce24bcc448816ce887cb0ed9a26f87f038cee5e37c97c7895f34defceb4d758" alt="Spring Security" height="38" />
     <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpngimg.com%2Fd%2Fmysql_PNG23.png&f=1&nofb=1&ipt=e2591dd4c8074fc52876265bd8a59415f70a72ef8ed82599383db9f78524b6ff" alt="MySQL" height="38" />
     <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogowik.com%2Fcontent%2Fuploads%2Fimages%2Fmaven-apache3537.jpg&f=1&nofb=1&ipt=3e27c589ced53fa913e0841209cee2b72129cf3edf184ba692c28fda5da1fa81" alt="Maven" height="38" />
@@ -56,10 +56,6 @@ docker-compose up -d --build
 
 - Frontend (container): `http://localhost:4200` (served by the frontend container)
 - Backend (container): `http://localhost:8080`
-
-- MySQL in `docker-compose.yml` uses `MYSQL_ROOT_PASSWORD` and a healthcheck. Do not set `MYSQL_USER=root` (it conflicts with the image entrypoint). If MySQL fails to become healthy, check `docker-compose logs mysql`.
-
-- Static assets served by Nginx (frontend) require readable permissions. If you see a `403` when requesting font files (e.g. `plento.ttf`), rebuild the frontend image after ensuring the Dockerfile sets proper permissions.
 
 ### Docker Prerequisites (local)
 
