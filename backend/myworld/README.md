@@ -74,6 +74,27 @@ Or (example) using the JAR with the `local` profile:
 java -jar target/myworld-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
 ```
 
+## Run with Docker (quick)
+
+To run the backend together with MySQL (and optionally the frontend) using the repository `docker-compose.yml`:
+
+```bash
+# From repository root
+docker-compose build backend
+docker-compose up -d backend mysql
+
+# Or to run the full stack
+docker-compose up -d --build
+```
+Notes:
+- Environment variables used by the container are configured in `docker-compose.yml` and the backend reads standard Spring env vars (`SPRING_DATASOURCE_URL`, `JWT_SECRET`, ...).
+- The MySQL service relies on `MYSQL_ROOT_PASSWORD` (do not set `MYSQL_USER=root`). If MySQL fails healthchecks, inspect `docker-compose logs mysql`.
+- Debugging: `docker-compose logs backend --tail=200` and `docker-compose exec backend sh -c 'ps aux && ls -l /app'` can help investigate startup issues.
+
+### Docker Prerequisites (local)
+
+- Ensure you have Docker Desktop (macOS/Windows) or Colima installed and running locally, otherwise, the build and up commands will fail.
+
 ## Tests
 
 Tests use an in-memory H2 database via `src/test/resources/application.properties`.

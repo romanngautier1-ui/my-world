@@ -57,3 +57,18 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Run with Docker
+
+To run a production build of the frontend inside a lightweight Nginx container (used by `docker-compose`):
+
+```bash
+# From repository root
+docker-compose build frontend
+docker-compose up -d frontend
+
+- Nginx serves static assets; if you get `403` for font files (e.g. `plento.ttf`), ensure the `frontend/Dockerfile` sets readable permissions.
+
+### Docker Prerequisites (local)
+
+- Ensure you have Docker Desktop (macOS/Windows) or Colima installed and running locally, otherwise, the build and up commands will fail.

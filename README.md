@@ -45,6 +45,26 @@ npm start
 
 Frontend (local): `http://localhost:4200`
 
+### Run with Docker (quick)
+
+If you prefer to run the full stack with Docker (recommended for integration testing), use the repository root where `docker-compose.yml` lives:
+
+```bash
+docker-compose build
+docker-compose up -d --build
+```
+
+- Frontend (container): `http://localhost:4200` (served by the frontend container)
+- Backend (container): `http://localhost:8080`
+
+- MySQL in `docker-compose.yml` uses `MYSQL_ROOT_PASSWORD` and a healthcheck. Do not set `MYSQL_USER=root` (it conflicts with the image entrypoint). If MySQL fails to become healthy, check `docker-compose logs mysql`.
+
+- Static assets served by Nginx (frontend) require readable permissions. If you see a `403` when requesting font files (e.g. `plento.ttf`), rebuild the frontend image after ensuring the Dockerfile sets proper permissions.
+
+### Docker Prerequisites (local)
+
+- Ensure you have Docker Desktop (macOS/Windows) or Colima installed and running locally, otherwise, the build and up commands will fail.
+
 ## Documentation
 
 - Backend API (routes, auth, uploads, PDF, profiles): [backend/myworld/README.md](backend/myworld/README.md)
